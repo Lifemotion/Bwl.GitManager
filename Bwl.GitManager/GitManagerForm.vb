@@ -4,7 +4,7 @@ Public Class GitManagerForm
     Inherits FormAppBase
     Private _repPathSetting As New StringSetting(_storage, "RepositoriesPaths", "")
     Private _command1Setting As New StringSetting(_storage, "Command1", "gitk|C:\Program Files\Git\cmd\gitk.exe|")
-    Private _command2Setting As New StringSetting(_storage, "Command2", "")
+    Private _command2Setting As New StringSetting(_storage, "Command2", "SourceTree|C:\Program Files (x86)\Atlassian\SourceTree\SourceTree.exe|")
     Private _command3Setting As New StringSetting(_storage, "Command3", "")
     Private _repTree As New GitPathNode()
 
@@ -23,6 +23,11 @@ Public Class GitManagerForm
         SetCustomCommand(_command1Setting.Value, menuCommand1)
         SetCustomCommand(_command2Setting.Value, menuCommand2)
         SetCustomCommand(_command3Setting.Value, menuCommand3)
+        Try
+            Text += " " + Application.ProductVersion.ToString + " [" + IO.File.GetLastWriteTime(Application.ExecutablePath).ToString + "]"
+        Catch ex As Exception
+
+        End Try
         Try
             GitTool.Init()
         Catch ex As Exception
