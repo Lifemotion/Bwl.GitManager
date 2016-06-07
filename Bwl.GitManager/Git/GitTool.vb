@@ -54,7 +54,8 @@
 
     Public Shared Function GetRepositoryStatus(repository As String) As GitRepositoryStatus
         Dim status As New GitRepositoryStatus
-        Dim result = Execute(repository, "status").ToLower
+        Dim result = Execute(repository, " -c advice.statusHints=false status").ToLower.Replace(vbLf, vbCrLf)
+        status.RawStatusText = result
         If result.Contains("not a git repository") Then
             status.IsRepository = False
         Else

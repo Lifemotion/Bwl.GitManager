@@ -27,8 +27,6 @@ Partial Class GitManagerForm
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(GitManagerForm))
         Me.TreeView1 = New System.Windows.Forms.TreeView()
-        Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
-        Me.Button1 = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.menuUpdateLocal = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuFetch = New System.Windows.Forms.ToolStripMenuItem()
@@ -36,13 +34,20 @@ Partial Class GitManagerForm
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
         Me.menuOpenExplorer = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuOpenCmd = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuCommand1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuCommand2 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuCommand3 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'logWriter
         '
+        Me.logWriter.ExtendedView = False
         Me.logWriter.Location = New System.Drawing.Point(0, 484)
-        Me.logWriter.Size = New System.Drawing.Size(881, 169)
+        Me.logWriter.Size = New System.Drawing.Size(764, 169)
         '
         'TreeView1
         '
@@ -59,40 +64,11 @@ Partial Class GitManagerForm
         Me.TreeView1.Size = New System.Drawing.Size(265, 424)
         Me.TreeView1.TabIndex = 2
         '
-        'ImageList1
-        '
-        Me.ImageList1.ImageStream = CType(resources.GetObject("ImageList1.ImageStream"), System.Windows.Forms.ImageListStreamer)
-        Me.ImageList1.TransparentColor = System.Drawing.Color.Transparent
-        Me.ImageList1.Images.SetKeyName(0, "Folder.ico")
-        Me.ImageList1.Images.SetKeyName(1, "Database 3.ico")
-        Me.ImageList1.Images.SetKeyName(2, "Arrow Down.ico")
-        Me.ImageList1.Images.SetKeyName(3, "Arrow Up.ico")
-        Me.ImageList1.Images.SetKeyName(4, "Good or Tick.ico")
-        Me.ImageList1.Images.SetKeyName(5, "Plus.ico")
-        Me.ImageList1.Images.SetKeyName(6, "Help and Support.ico")
-        Me.ImageList1.Images.SetKeyName(7, "Minus.ico")
-        Me.ImageList1.Images.SetKeyName(8, "Warning.ico")
-        Me.ImageList1.Images.SetKeyName(9, "Download Database.ico")
-        Me.ImageList1.Images.SetKeyName(10, "Upload Database.ico")
-        Me.ImageList1.Images.SetKeyName(11, "New Database.ico")
-        Me.ImageList1.Images.SetKeyName(12, "Web Database.ico")
-        '
-        'Button1
-        '
-        Me.Button1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.Button1.Location = New System.Drawing.Point(2, 457)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(265, 23)
-        Me.Button1.TabIndex = 3
-        Me.Button1.Text = "Пересканировать "
-        Me.Button1.UseVisualStyleBackColor = True
-        '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(283, 120)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(283, 186)
         '
         'menuUpdateLocal
         '
@@ -129,11 +105,70 @@ Partial Class GitManagerForm
         Me.menuOpenCmd.Size = New System.Drawing.Size(282, 22)
         Me.menuOpenCmd.Text = "Открыть коммандную строку"
         '
+        'menuCommand1
+        '
+        Me.menuCommand1.Name = "menuCommand1"
+        Me.menuCommand1.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand1.Text = "Команда 1"
+        '
+        'menuCommand2
+        '
+        Me.menuCommand2.Name = "menuCommand2"
+        Me.menuCommand2.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand2.Text = "Команда 2"
+        '
+        'menuCommand3
+        '
+        Me.menuCommand3.Name = "menuCommand3"
+        Me.menuCommand3.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand3.Text = "Команда 3"
+        '
+        'ImageList1
+        '
+        Me.ImageList1.ImageStream = CType(resources.GetObject("ImageList1.ImageStream"), System.Windows.Forms.ImageListStreamer)
+        Me.ImageList1.TransparentColor = System.Drawing.Color.Transparent
+        Me.ImageList1.Images.SetKeyName(0, "Folder.ico")
+        Me.ImageList1.Images.SetKeyName(1, "Database 3.ico")
+        Me.ImageList1.Images.SetKeyName(2, "Arrow Down.ico")
+        Me.ImageList1.Images.SetKeyName(3, "Arrow Up.ico")
+        Me.ImageList1.Images.SetKeyName(4, "Good or Tick.ico")
+        Me.ImageList1.Images.SetKeyName(5, "Plus.ico")
+        Me.ImageList1.Images.SetKeyName(6, "Help and Support.ico")
+        Me.ImageList1.Images.SetKeyName(7, "Minus.ico")
+        Me.ImageList1.Images.SetKeyName(8, "Warning.ico")
+        Me.ImageList1.Images.SetKeyName(9, "Download Database.ico")
+        Me.ImageList1.Images.SetKeyName(10, "Upload Database.ico")
+        Me.ImageList1.Images.SetKeyName(11, "New Database.ico")
+        Me.ImageList1.Images.SetKeyName(12, "Web Database.ico")
+        '
+        'Button1
+        '
+        Me.Button1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Button1.Location = New System.Drawing.Point(2, 457)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(265, 23)
+        Me.Button1.TabIndex = 3
+        Me.Button1.Text = "Пересканировать "
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'TextBox1
+        '
+        Me.TextBox1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TextBox1.Location = New System.Drawing.Point(273, 27)
+        Me.TextBox1.Multiline = True
+        Me.TextBox1.Name = "TextBox1"
+        Me.TextBox1.Size = New System.Drawing.Size(479, 424)
+        Me.TextBox1.TabIndex = 4
+        '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(881, 653)
+        Me.ClientSize = New System.Drawing.Size(764, 653)
+        Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.TreeView1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -142,6 +177,7 @@ Partial Class GitManagerForm
         Me.Controls.SetChildIndex(Me.TreeView1, 0)
         Me.Controls.SetChildIndex(Me.Button1, 0)
         Me.Controls.SetChildIndex(Me.logWriter, 0)
+        Me.Controls.SetChildIndex(Me.TextBox1, 0)
         Me.ContextMenuStrip1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -158,4 +194,8 @@ Partial Class GitManagerForm
     Friend WithEvents ToolStripMenuItem1 As ToolStripSeparator
     Friend WithEvents menuOpenExplorer As ToolStripMenuItem
     Friend WithEvents menuOpenCmd As ToolStripMenuItem
+    Friend WithEvents menuCommand1 As ToolStripMenuItem
+    Friend WithEvents menuCommand2 As ToolStripMenuItem
+    Friend WithEvents menuCommand3 As ToolStripMenuItem
+    Friend WithEvents TextBox1 As TextBox
 End Class

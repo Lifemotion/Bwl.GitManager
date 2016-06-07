@@ -3,9 +3,26 @@
 Public Class GitManagerForm
     Inherits FormAppBase
     Private _repPathSetting As New StringSetting(_storage, "RepositoriesPaths", "")
+    Private _command1Setting As New StringSetting(_storage, "Command1", "gitk|C:\Program Files\Git\cmd\gitk.exe|")
+    Private _command2Setting As New StringSetting(_storage, "Command2", "")
+    Private _command3Setting As New StringSetting(_storage, "Command3", "")
     Private _repTree As New GitPathNode()
 
+    Private Sub SetCustomCommand(command As String, menu As ToolStripMenuItem)
+        Dim parts = command.Split({"|"}, StringSplitOptions.None)
+        If parts.Length > 2 Then
+            menu.Text = parts(0)
+            menu.Tag = parts
+            menu.Visible = True
+        Else
+            menu.Visible = False
+        End If
+    End Sub
+
     Private Sub RepmanagerForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        SetCustomCommand(_command1Setting.Value, menuCommand1)
+        SetCustomCommand(_command2Setting.Value, menuCommand2)
+        SetCustomCommand(_command3Setting.Value, menuCommand3)
         Try
             GitTool.Init()
         Catch ex As Exception
@@ -62,8 +79,7 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        '   RescanRepTrees()
-        RescanRepTreesWorker()
+        RescanRepTrees()
     End Sub
 
     Private Sub RefreshNodeState(node As TreeNode)
@@ -182,6 +198,35 @@ Public Class GitManagerForm
         If e.Button = MouseButtons.Right Then
             'ContextMenuStrip1.Show(e.x, e.Y)
         End If
+    End Sub
+
+    Private Sub menuCommand1_Click(sender As Object, e As EventArgs) Handles menuCommand1.Click, menuCommand2.Click, menuCommand3.Click
+        Dim node = TreeView1.SelectedNode
+        If node IsNot Nothing Then
+            Dim repNode As GitPathNode = node.Tag
+            If repNode IsNot Nothing Then
+                Dim prc As New Process()
+                Dim parts As String() = sender.tag
+                prc.StartInfo.FileName = parts(1)
+                prc.StartInfo.Arguments = parts(2)
+                prc.StartInfo.WorkingDirectory = repNode.FullPath
+                prc.Start()
+            End If
+        End If
+    End Sub
+
+    Private Sub TreeView1_Click(sender As Object, e As EventArgs) Handles TreeView1.Click
+        Dim node = TreeView1.SelectedNode
+        If node IsNot Nothing Then
+            Dim repNode As GitPathNode = node.Tag
+            If repNode IsNot Nothing Then
+                If repNode.Status.IsRepository Then
+                    TextBox1.Text = repNode.Status.RawStatusText
+                Else
+                    TextBox1.Text = repNode.FullPath
+                End If
+            End If
+            End If
     End Sub
 End Class
 

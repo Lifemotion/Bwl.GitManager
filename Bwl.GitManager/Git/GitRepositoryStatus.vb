@@ -7,4 +7,5 @@
     Public Property CanPull As Boolean
     Public Property CanPush As Boolean
     Public Property UpToDate As Boolean
+    Public Property RawStatusText As String = ""
 End Class
