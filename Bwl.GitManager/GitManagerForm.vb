@@ -6,7 +6,10 @@ Public Class GitManagerForm
     Private _command1Setting As New StringSetting(_storage, "Command1", "gitk|C:\Program Files\Git\cmd\gitk.exe|")
     Private _command2Setting As New StringSetting(_storage, "Command2", "SourceTree|C:\Program Files (x86)\Atlassian\SourceTree\SourceTree.exe|")
     Private _command3Setting As New StringSetting(_storage, "Command3", "")
-    Private _repTree As New GitPathNode()
+    Private _command4Setting As New StringSetting(_storage, "Command4", "")
+    Private _command5Setting As New StringSetting(_storage, "Command5", "")
+    Private _lastRepCount As New IntegerSetting(_storage, "LastRepositoryCount", 0)
+    Private WithEvents _repTree As New GitPathNode()
 
     Private Sub SetCustomCommand(command As String, menu As ToolStripMenuItem)
         Dim parts = command.Split({"|"}, StringSplitOptions.None)
@@ -23,6 +26,8 @@ Public Class GitManagerForm
         SetCustomCommand(_command1Setting.Value, menuCommand1)
         SetCustomCommand(_command2Setting.Value, menuCommand2)
         SetCustomCommand(_command3Setting.Value, menuCommand3)
+        SetCustomCommand(_command4Setting.Value, menuCommand4)
+        SetCustomCommand(_command5Setting.Value, menuCommand5)
         Try
             Text += " " + Application.ProductVersion.ToString + " [" + IO.File.GetLastWriteTime(Application.ExecutablePath).ToString + "]"
         Catch ex As Exception
@@ -34,6 +39,22 @@ Public Class GitManagerForm
             MsgBox(ex.Message, MsgBoxStyle.Critical)
             Application.Exit()
         End Try
+        AddHandler GitTool.GetRepositoriesTreeProcess, Sub(found As Integer)
+                                                           _lastRepCount.Value = found
+                                                           Me.Invoke(Sub()
+                                                                         If found <= ProgressBar1.Maximum Then
+                                                                             ProgressBar1.Value = found
+                                                                         End If
+                                                                     End Sub)
+                                                       End Sub
+        AddHandler GitPathNode.Progress, Sub(found As Integer)
+                                             _lastRepCount.Value = found
+                                             Me.Invoke(Sub()
+                                                           If found <= ProgressBar1.Maximum Then
+                                                               ProgressBar1.Value = found
+                                                           End If
+                                                       End Sub)
+                                         End Sub
         RescanRepTrees()
     End Sub
 
@@ -44,6 +65,12 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub RescanRepTreesWorker()
+        Me.Invoke(Sub()
+                      If _lastRepCount.Value < 0 Then _lastRepCount.Value = 0
+                      Me.ProgressBar1.Value = 0
+                      Me.ProgressBar1.Maximum = _lastRepCount.Value
+                  End Sub)
+
         Threading.Thread.Sleep(500)
         _logger.AddMessage("Обновление списка репозиториев...")
         Dim newRepTree As New GitPathNode
@@ -57,6 +84,7 @@ Public Class GitManagerForm
         _logger.AddMessage("Обновление списка репозиториев завершено")
         _repTree = newRepTree
         ShowRepTrees()
+        Me.Invoke(Sub() Me.ProgressBar1.Value = 0)
     End Sub
 
     Private Sub ShowRepTrees()
@@ -118,9 +146,13 @@ Public Class GitManagerForm
     End Sub
 
     Public Sub RefreshNodeAll()
-        For Each node In TreeView1.Nodes
-            RefreshNodeRecursive(node)
-        Next
+        If Me.InvokeRequired Then
+            Me.Invoke(Sub() RefreshNodeAll())
+        Else
+            For Each node In TreeView1.Nodes
+                RefreshNodeRecursive(node)
+            Next
+        End If
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs)
@@ -135,14 +167,31 @@ Public Class GitManagerForm
         TreeView1.Refresh()
     End Sub
 
+    Private _progressThread As Threading.Thread
+    Private Sub StartInThread(del As Threading.ThreadStart)
+        If _progressThread IsNot Nothing Then
+            Throw New Exception("Last operation not completed")
+        Else
+            _progressThread = New Threading.Thread(del)
+            _progressThread.Start()
+        End If
+    End Sub
+
     Private Sub menuUpdateLocal_Click(sender As Object, e As EventArgs) Handles menuUpdateLocal.Click
         Dim node = TreeView1.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
             If repNode IsNot Nothing Then
-                repNode.UpdateStatus(True)
-                '   RefreshNodeRecursive(node)
-                RefreshNodeAll()
+                _repTree.ResetProgress()
+                ProgressBar1.Value = 0
+                ProgressBar1.Maximum = repNode.GetChildCount(True)
+                StartInThread(Sub()
+                                  repNode.UpdateStatus(True)
+                                  RefreshNodeAll()
+                                  _progressThread = Nothing
+                                  _logger.AddMessage("Завершено")
+                                  Me.Invoke(Sub() ProgressBar1.Value = 0)
+                              End Sub)
             End If
         End If
     End Sub
@@ -152,9 +201,16 @@ Public Class GitManagerForm
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
             If repNode IsNot Nothing Then
-                repNode.UpdateFetch(True)
-                '   RefreshNodeRecursive(node)
-                RefreshNodeAll()
+                _repTree.ResetProgress()
+                ProgressBar1.Value = 0
+                ProgressBar1.Maximum = repNode.GetChildCount(True)
+                StartInThread(Sub()
+                                  repNode.UpdateFetch(True)
+                                  RefreshNodeAll()
+                                  _progressThread = Nothing
+                                  _logger.AddMessage("Завершено")
+                                  Me.Invoke(Sub() ProgressBar1.Value = 0)
+                              End Sub)
             End If
         End If
     End Sub
@@ -164,9 +220,16 @@ Public Class GitManagerForm
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
             If repNode IsNot Nothing Then
-                repNode.UpdatePull(True)
-                '   RefreshNodeRecursive(node)
-                RefreshNodeAll()
+                _repTree.ResetProgress()
+                ProgressBar1.Value = 0
+                ProgressBar1.Maximum = repNode.GetChildCount(0)
+                StartInThread(Sub()
+                                  repNode.UpdatePull(True)
+                                  RefreshNodeAll()
+                                  _progressThread = Nothing
+                                  _logger.AddMessage("Завершено")
+                                  Me.Invoke(Sub() ProgressBar1.Value = 0)
+                              End Sub)
             End If
         End If
     End Sub
@@ -232,6 +295,10 @@ Public Class GitManagerForm
                 End If
             End If
             End If
+    End Sub
+
+    Private Sub _repTree_Progress(processed As Integer) Handles _repTree.Progress
+
     End Sub
 End Class
 

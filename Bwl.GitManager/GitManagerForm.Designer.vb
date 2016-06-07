@@ -40,6 +40,9 @@ Partial Class GitManagerForm
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.Button1 = New System.Windows.Forms.Button()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.menuCommand4 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuCommand5 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -66,9 +69,9 @@ Partial Class GitManagerForm
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3, Me.menuCommand4, Me.menuCommand5})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(283, 186)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(283, 230)
         '
         'menuUpdateLocal
         '
@@ -162,11 +165,33 @@ Partial Class GitManagerForm
         Me.TextBox1.Size = New System.Drawing.Size(479, 424)
         Me.TextBox1.TabIndex = 4
         '
+        'menuCommand4
+        '
+        Me.menuCommand4.Name = "menuCommand4"
+        Me.menuCommand4.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand4.Text = "Команда 4"
+        '
+        'menuCommand5
+        '
+        Me.menuCommand5.Name = "menuCommand5"
+        Me.menuCommand5.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand5.Text = "Команда 5"
+        '
+        'ProgressBar1
+        '
+        Me.ProgressBar1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ProgressBar1.Location = New System.Drawing.Point(273, 457)
+        Me.ProgressBar1.Name = "ProgressBar1"
+        Me.ProgressBar1.Size = New System.Drawing.Size(479, 23)
+        Me.ProgressBar1.TabIndex = 5
+        '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(764, 653)
+        Me.Controls.Add(Me.ProgressBar1)
         Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.TreeView1)
@@ -177,6 +202,7 @@ Partial Class GitManagerForm
         Me.Controls.SetChildIndex(Me.Button1, 0)
         Me.Controls.SetChildIndex(Me.logWriter, 0)
         Me.Controls.SetChildIndex(Me.TextBox1, 0)
+        Me.Controls.SetChildIndex(Me.ProgressBar1, 0)
         Me.ContextMenuStrip1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -197,4 +223,7 @@ Partial Class GitManagerForm
     Friend WithEvents menuCommand2 As ToolStripMenuItem
     Friend WithEvents menuCommand3 As ToolStripMenuItem
     Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents menuCommand4 As ToolStripMenuItem
+    Friend WithEvents menuCommand5 As ToolStripMenuItem
+    Friend WithEvents ProgressBar1 As ProgressBar
 End Class
