@@ -143,8 +143,7 @@ Partial Class GitManagerForm
         '
         'Button1
         '
-        Me.Button1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Button1.Location = New System.Drawing.Point(2, 457)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(265, 23)
