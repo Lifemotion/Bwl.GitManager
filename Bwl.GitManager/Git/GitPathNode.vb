@@ -17,15 +17,15 @@
         Return result
     End Function
 
-    Public Sub UpdateStatus(recursive As Boolean)
-        _progress += 1 : RaiseEvent Progress(_progress)
+    Public Sub UpdateStatus(recursive As Boolean, noProgress As Boolean)
+        If Not noProgress Then _progress += 1 : RaiseEvent Progress(_progress)
         If FullPath <> "#" Then _Status = GitTool.GetRepositoryStatus(FullPath)
         If recursive Then
             For Each child In ChildNodes
-                child.UpdateStatus(recursive)
+                child.UpdateStatus(recursive, noProgress)
             Next
         End If
-    End Sub
+        End Sub
 
     Public Function GetChildCount(recursive As Boolean) As Integer
         Dim result = ChildNodes.Count

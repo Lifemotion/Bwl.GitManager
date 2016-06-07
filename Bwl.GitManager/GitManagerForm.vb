@@ -39,14 +39,14 @@ Public Class GitManagerForm
             MsgBox(ex.Message, MsgBoxStyle.Critical)
             Application.Exit()
         End Try
-        AddHandler GitTool.GetRepositoriesTreeProcess, Sub(found As Integer)
-                                                           _lastRepCount.Value = found
-                                                           Me.Invoke(Sub()
-                                                                         If found <= ProgressBar1.Maximum Then
-                                                                             ProgressBar1.Value = found
-                                                                         End If
-                                                                     End Sub)
-                                                       End Sub
+        AddHandler GitTool.Progress, Sub(found As Integer)
+                                         _lastRepCount.Value = found
+                                         Me.Invoke(Sub()
+                                                       If found <= ProgressBar1.Maximum Then
+                                                           ProgressBar1.Value = found
+                                                       End If
+                                                   End Sub)
+                                     End Sub
         AddHandler GitPathNode.Progress, Sub(found As Integer)
                                              _lastRepCount.Value = found
                                              Me.Invoke(Sub()
@@ -70,7 +70,7 @@ Public Class GitManagerForm
                       Me.ProgressBar1.Value = 0
                       Me.ProgressBar1.Maximum = _lastRepCount.Value
                   End Sub)
-
+        GitTool.ProgressReset()
         Threading.Thread.Sleep(500)
         _logger.AddMessage("Обновление списка репозиториев...")
         Dim newRepTree As New GitPathNode
@@ -156,7 +156,7 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs)
-        _repTree.UpdateStatus(True)
+        _repTree.UpdateStatus(True, False)
         RefreshNodeAll()
         TreeView1.Refresh()
     End Sub
@@ -186,7 +186,7 @@ Public Class GitManagerForm
                 ProgressBar1.Value = 0
                 ProgressBar1.Maximum = repNode.GetChildCount(True)
                 StartInThread(Sub()
-                                  repNode.UpdateStatus(True)
+                                  repNode.UpdateStatus(True, False)
                                   RefreshNodeAll()
                                   _progressThread = Nothing
                                   _logger.AddMessage("Завершено")
@@ -299,6 +299,18 @@ Public Class GitManagerForm
 
     Private Sub _repTree_Progress(processed As Integer) Handles _repTree.Progress
 
+    End Sub
+
+    Private Sub GitManagerForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If e.CloseReason = CloseReason.UserClosing Then
+            e.Cancel = True
+            Me.Hide()
+            NotifyIcon1.Visible = True
+        End If
+    End Sub
+
+    Private Sub NotifyIcon1_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon1.DoubleClick
+        Me.Show()
     End Sub
 End Class
 

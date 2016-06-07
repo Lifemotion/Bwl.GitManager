@@ -37,12 +37,13 @@ Partial Class GitManagerForm
         Me.menuCommand1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuCommand2 = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuCommand3 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuCommand4 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuCommand5 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.Button1 = New System.Windows.Forms.Button()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
-        Me.menuCommand4 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.menuCommand5 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
+        Me.NotifyIcon1 = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -126,6 +127,18 @@ Partial Class GitManagerForm
         Me.menuCommand3.Size = New System.Drawing.Size(282, 22)
         Me.menuCommand3.Text = "Команда 3"
         '
+        'menuCommand4
+        '
+        Me.menuCommand4.Name = "menuCommand4"
+        Me.menuCommand4.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand4.Text = "Команда 4"
+        '
+        'menuCommand5
+        '
+        Me.menuCommand5.Name = "menuCommand5"
+        Me.menuCommand5.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand5.Text = "Команда 5"
+        '
         'ImageList1
         '
         Me.ImageList1.ImageStream = CType(resources.GetObject("ImageList1.ImageStream"), System.Windows.Forms.ImageListStreamer)
@@ -165,18 +178,6 @@ Partial Class GitManagerForm
         Me.TextBox1.Size = New System.Drawing.Size(479, 424)
         Me.TextBox1.TabIndex = 4
         '
-        'menuCommand4
-        '
-        Me.menuCommand4.Name = "menuCommand4"
-        Me.menuCommand4.Size = New System.Drawing.Size(282, 22)
-        Me.menuCommand4.Text = "Команда 4"
-        '
-        'menuCommand5
-        '
-        Me.menuCommand5.Name = "menuCommand5"
-        Me.menuCommand5.Size = New System.Drawing.Size(282, 22)
-        Me.menuCommand5.Text = "Команда 5"
-        '
         'ProgressBar1
         '
         Me.ProgressBar1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
@@ -185,6 +186,12 @@ Partial Class GitManagerForm
         Me.ProgressBar1.Name = "ProgressBar1"
         Me.ProgressBar1.Size = New System.Drawing.Size(479, 23)
         Me.ProgressBar1.TabIndex = 5
+        '
+        'NotifyIcon1
+        '
+        Me.NotifyIcon1.Icon = CType(resources.GetObject("NotifyIcon1.Icon"), System.Drawing.Icon)
+        Me.NotifyIcon1.Text = "Bwl Git Manager"
+        Me.NotifyIcon1.Visible = True
         '
         'GitManagerForm
         '
@@ -226,4 +233,5 @@ Partial Class GitManagerForm
     Friend WithEvents menuCommand4 As ToolStripMenuItem
     Friend WithEvents menuCommand5 As ToolStripMenuItem
     Friend WithEvents ProgressBar1 As ProgressBar
+    Friend WithEvents NotifyIcon1 As NotifyIcon
 End Class

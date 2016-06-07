@@ -86,27 +86,26 @@
         Return False
     End Function
 
-    Public Shared Event GetRepositoriesTreeProcess(repositoriesFound As Integer)
+    Public Shared Event Progress(repositoriesFound As Integer)
 
     Private Shared _repositoriesCount As Integer
 
-    Public Shared Function GetRepositoriesTree(rootPath As String) As GitPathNode
+    Public Shared Sub ProgressReset()
         _repositoriesCount = 0
-        Return GetRepositoriesTreeInternal(rootPath)
-    End Function
+    End Sub
 
-    Private Shared Function GetRepositoriesTreeInternal(rootPath As String) As GitPathNode
+    Public Shared Function GetRepositoriesTree(rootPath As String) As GitPathNode
         If IO.Directory.Exists(rootPath) Then
             Dim rep = New GitPathNode(rootPath)
-            rep.UpdateStatus(False)
+            rep.UpdateStatus(False, True)
             If rep.Status.IsRepository Then
                 _repositoriesCount += 1
-                RaiseEvent GetRepositoriesTreeProcess(_repositoriesCount)
+                RaiseEvent Progress(_repositoriesCount)
                 Return rep
             Else
                 Dim childs = IO.Directory.GetDirectories(rootPath)
                 For Each child In childs
-                    Dim repChild = GetRepositoriesTreeInternal(child)
+                    Dim repChild = GetRepositoriesTree(child)
                     If ContainsRepositories(repChild) Then rep.ChildNodes.Add(repChild)
                 Next
                 Return rep
