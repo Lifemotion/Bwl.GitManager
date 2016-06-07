@@ -1,0 +1,13 @@
+.vs
+release
+debug
+output
+obj
+bin
+*.suo
+local-*
+*.psess
+*.vspx
+install
+install.zip
+install_7z_sfx.exe
