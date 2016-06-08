@@ -392,6 +392,7 @@ Public Class GitManagerForm
                         CreateActionButton(info.Name, repNode.FullPath, file, "", False)
                     Next
                 Else
+                    CreateActionButton("Explorer", repNode.FullPath, "explorer", ".", False)
                     TextBox1.Text = repNode.FullPath
                 End If
             End If
