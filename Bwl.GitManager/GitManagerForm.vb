@@ -1,5 +1,4 @@
-﻿Imports System.Xml
-Imports Bwl.Framework
+﻿Imports Bwl.Framework
 
 Public Class GitManagerForm
     Inherits FormAppBase
@@ -9,8 +8,20 @@ Public Class GitManagerForm
     Private _command3Setting As New StringSetting(_storage, "Command3", "")
     Private _command4Setting As New StringSetting(_storage, "Command4", "")
     Private _command5Setting As New StringSetting(_storage, "Command5", "")
+    Private _autoFetchEveryMinutes As New IntegerSetting(_storage, "AutoFetchEveryMinutes", 0)
+    Private _autoUpdateLocalEveryMinutes As New IntegerSetting(_storage, "AutoStatusEveryMinutes", 0)
     Private _lastRepCount As New IntegerSetting(_storage, "LastRepositoryCount", 0)
-    Private WithEvents _repTree As New GitPathNode()
+    Private _repTree As New GitPathNode()
+    Private _progressThread As Threading.Thread
+
+    Private Sub StartInThread(del As Threading.ThreadStart)
+        If _progressThread IsNot Nothing Then
+            Throw New Exception("Last operation not completed")
+        Else
+            _progressThread = New Threading.Thread(del)
+            _progressThread.Start()
+        End If
+    End Sub
 
     Private Sub SetCustomCommand(command As String, menu As ToolStripMenuItem)
         Dim parts = command.Split({"|"}, StringSplitOptions.None)
@@ -42,21 +53,42 @@ Public Class GitManagerForm
         End Try
         AddHandler GitTool.Progress, Sub(found As Integer)
                                          _lastRepCount.Value = found
-                                         Me.Invoke(Sub()
-                                                       If found <= ProgressBar1.Maximum Then
-                                                           ProgressBar1.Value = found
-                                                       End If
-                                                   End Sub)
+                                         Me.Invoke(Sub() If found <= ProgressBar1.Maximum Then ProgressBar1.Value = found)
                                      End Sub
         AddHandler GitPathNode.Progress, Sub(found As Integer)
                                              _lastRepCount.Value = found
-                                             Me.Invoke(Sub()
-                                                           If found <= ProgressBar1.Maximum Then
-                                                               ProgressBar1.Value = found
-                                                           End If
-                                                       End Sub)
+                                             Me.Invoke(Sub() If found <= ProgressBar1.Maximum Then ProgressBar1.Value = found)
                                          End Sub
         RescanRepTrees()
+        Dim autoFetchThread As New Threading.Thread(Sub()
+                                                        Do
+                                                            Threading.Thread.Sleep(100)
+                                                            If _autoFetchEveryMinutes.Value > 0 Then
+                                                                Threading.Thread.Sleep(1000 * 60 * _autoFetchEveryMinutes.Value)
+                                                                Try
+                                                                    FetchTree(_repTree)
+                                                                Catch ex As Exception
+                                                                End Try
+                                                            End If
+                                                        Loop
+                                                    End Sub)
+        autoFetchThread.IsBackground = True
+        autoFetchThread.Start()
+
+        Dim autoStatusThread As New Threading.Thread(Sub()
+                                                         Do
+                                                             Threading.Thread.Sleep(100)
+                                                             If _autoUpdateLocalEveryMinutes.Value > 0 Then
+                                                                 Threading.Thread.Sleep(1000 * 60 * _autoUpdateLocalEveryMinutes.Value)
+                                                                 Try
+                                                                     UpdateTree(_repTree)
+                                                                 Catch ex As Exception
+                                                                 End Try
+                                                             End If
+                                                         Loop
+                                                     End Sub)
+        autoStatusThread.IsBackground = True
+        autoStatusThread.Start()
     End Sub
 
     Private Sub RescanRepTrees()
@@ -112,10 +144,6 @@ Public Class GitManagerForm
         Next
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        RescanRepTrees()
-    End Sub
-
     Private Sub RefreshNodeState(node As TreeNode)
         Dim repNode As GitPathNode = node.Tag
         If repNode IsNot Nothing Then
@@ -150,50 +178,75 @@ Public Class GitManagerForm
         If Me.InvokeRequired Then
             Me.Invoke(Sub() RefreshNodeAll())
         Else
-            For Each node In TreeView1.Nodes
+            Dim changes = False
+            For Each node As TreeNode In TreeView1.Nodes
                 RefreshNodeRecursive(node)
+                If node.ImageIndex > 1 Then changes = True
             Next
+            If changes Then
+                NotifyIconWarning.Visible = True
+                NotifyIconGood.Visible = False
+            Else
+                NotifyIconWarning.Visible = False
+                NotifyIconGood.Visible = True
+            End If
         End If
     End Sub
 
-    Private Sub Button2_Click(sender As Object, e As EventArgs)
-        _repTree.UpdateStatus(True, False)
-        RefreshNodeAll()
-        TreeView1.Refresh()
+    Private Sub UpdateTree(tree As GitPathNode)
+        _repTree.ResetProgress()
+        Me.Invoke(Sub()
+                      ProgressBar1.Value = 0
+                      ProgressBar1.Maximum = tree.GetChildCount(True)
+                  End Sub)
+        StartInThread(Sub()
+                          tree.UpdateStatus(True, False)
+                          RefreshNodeAll()
+                          _progressThread = Nothing
+                          _logger.AddMessage("Завершено Update")
+                          Me.Invoke(Sub() ProgressBar1.Value = 0)
+                      End Sub)
     End Sub
 
-    Private Sub Button3_Click(sender As Object, e As EventArgs)
-        _repTree.UpdateFetch(True)
-        RefreshNodeAll()
-        TreeView1.Refresh()
+    Private Sub FetchTree(tree As GitPathNode)
+        _repTree.ResetProgress()
+        Me.Invoke(Sub()
+                      ProgressBar1.Value = 0
+                      ProgressBar1.Maximum = tree.GetChildCount(0)
+                  End Sub)
+        StartInThread(Sub()
+                          tree.UpdateFetch(True)
+                          RefreshNodeAll()
+                          _progressThread = Nothing
+                          _logger.AddMessage("Завершено Fetch")
+                          Me.Invoke(Sub() ProgressBar1.Value = 0)
+                      End Sub)
     End Sub
 
-    Private _progressThread As Threading.Thread
-    Private Sub StartInThread(del As Threading.ThreadStart)
-        If _progressThread IsNot Nothing Then
-            Throw New Exception("Last operation not completed")
-        Else
-            _progressThread = New Threading.Thread(del)
-            _progressThread.Start()
-        End If
+    Private Sub PullTree(tree As GitPathNode)
+        _repTree.ResetProgress()
+        Me.Invoke(Sub()
+                      ProgressBar1.Value = 0
+                      ProgressBar1.Maximum = tree.GetChildCount(0)
+                  End Sub)
+        StartInThread(Sub()
+                          tree.UpdatePull(True)
+                          RefreshNodeAll()
+                          _progressThread = Nothing
+                          _logger.AddMessage("Завершено Pull")
+                          Me.Invoke(Sub() ProgressBar1.Value = 0)
+                      End Sub)
+    End Sub
+
+    Private Sub bRescanRepositoriesPaths_Click(sender As Object, e As EventArgs) Handles bRescanRepositoriesPaths.Click
+        RescanRepTrees()
     End Sub
 
     Private Sub menuUpdateLocal_Click(sender As Object, e As EventArgs) Handles menuUpdateLocal.Click
         Dim node = TreeView1.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
-            If repNode IsNot Nothing Then
-                _repTree.ResetProgress()
-                ProgressBar1.Value = 0
-                ProgressBar1.Maximum = repNode.GetChildCount(True)
-                StartInThread(Sub()
-                                  repNode.UpdateStatus(True, False)
-                                  RefreshNodeAll()
-                                  _progressThread = Nothing
-                                  _logger.AddMessage("Завершено")
-                                  Me.Invoke(Sub() ProgressBar1.Value = 0)
-                              End Sub)
-            End If
+            If repNode IsNot Nothing Then UpdateTree(repNode)
         End If
     End Sub
 
@@ -201,18 +254,7 @@ Public Class GitManagerForm
         Dim node = TreeView1.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
-            If repNode IsNot Nothing Then
-                _repTree.ResetProgress()
-                ProgressBar1.Value = 0
-                ProgressBar1.Maximum = repNode.GetChildCount(True)
-                StartInThread(Sub()
-                                  repNode.UpdateFetch(True)
-                                  RefreshNodeAll()
-                                  _progressThread = Nothing
-                                  _logger.AddMessage("Завершено")
-                                  Me.Invoke(Sub() ProgressBar1.Value = 0)
-                              End Sub)
-            End If
+            If repNode IsNot Nothing Then FetchTree(repNode)
         End If
     End Sub
 
@@ -220,18 +262,7 @@ Public Class GitManagerForm
         Dim node = TreeView1.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
-            If repNode IsNot Nothing Then
-                _repTree.ResetProgress()
-                ProgressBar1.Value = 0
-                ProgressBar1.Maximum = repNode.GetChildCount(0)
-                StartInThread(Sub()
-                                  repNode.UpdatePull(True)
-                                  RefreshNodeAll()
-                                  _progressThread = Nothing
-                                  _logger.AddMessage("Завершено")
-                                  Me.Invoke(Sub() ProgressBar1.Value = 0)
-                              End Sub)
-            End If
+            If repNode IsNot Nothing Then PullTree(repNode)
         End If
     End Sub
 
@@ -239,9 +270,7 @@ Public Class GitManagerForm
         Dim node = TreeView1.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
-            If repNode IsNot Nothing Then
-                Shell("explorer """ + repNode.FullPath + """", vbNormalFocus)
-            End If
+            If repNode IsNot Nothing Then Shell("explorer """ + repNode.FullPath + """", vbNormalFocus)
         End If
     End Sub
 
@@ -258,15 +287,8 @@ Public Class GitManagerForm
         End If
     End Sub
 
-    Private Sub TreeView1_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView1.AfterSelect
-
-    End Sub
-
     Private Sub TreeView1_MouseDown(sender As Object, e As MouseEventArgs) Handles TreeView1.MouseDown
         TreeView1.SelectedNode = TreeView1.GetNodeAt(e.X, e.Y)
-        If e.Button = MouseButtons.Right Then
-            'ContextMenuStrip1.Show(e.x, e.Y)
-        End If
     End Sub
 
     Private Sub menuCommand1_Click(sender As Object, e As EventArgs) Handles menuCommand1.Click, menuCommand2.Click, menuCommand3.Click
@@ -298,85 +320,23 @@ Public Class GitManagerForm
         End If
     End Sub
 
-    Private Sub _repTree_Progress(processed As Integer) Handles _repTree.Progress
-
-    End Sub
-
     Private Sub GitManagerForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
             Me.Hide()
-            NotifyIcon1.Visible = True
         End If
-    End Sub
-
-    Private Sub NotifyIcon1_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon1.DoubleClick
-        Me.Show()
     End Sub
 
     Private Sub menuExportSourcetree_Click(sender As Object, e As EventArgs) Handles menuExportSourcetree.Click
-        Dim file = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Atlassian", "SourceTree", "bookmarks.xml")
-        If IO.File.Exists(file) = False Then
-            MsgBox("Sourcetree Bookmarks file not found: " + file, MsgBoxStyle.Critical)
-        Else
-            IO.File.Copy(file, file + ".backup-" + Now.Ticks.ToString)
-            Dim bookmarks As New Xml.XmlDocument
-            bookmarks.Load(file)
-            Dim itemsArray = bookmarks.Item("ArrayOfTreeViewNode")
-            For Each child In _repTree.ChildNodes
-                ExportSourceTreeRecursive(bookmarks, itemsArray, child, 0)
-            Next
-            bookmarks.Save(file)
-            _logger.AddMessage("Экспорт в SourceTree завершен")
-
-        End If
+        Try
+            SourceTreeExport.Export(_repTree)
+        Catch ex As Exception
+            MsgBox(ex.Message, vbCritical)
+        End Try
     End Sub
 
-    Private Sub ExportSourceTreeRecursive(doc As XmlDocument, xmlnode As Xml.XmlElement, gitnode As GitPathNode, level As Integer)
-        If gitnode.Status.IsRepository Then
-            Dim found As Xml.XmlElement = Nothing
-            For Each node As Xml.XmlElement In xmlnode.ChildNodes
-                If node.Attributes("xsi:type").Value = "BookmarkNode" And node.Item("Name").InnerText = gitnode.Name Then found = node
-            Next
-            If found Is Nothing Then
-                Dim node = doc.CreateElement("TreeViewNode")
-                Dim schemeAttr = doc.CreateAttribute("xsi", "type", "http://www.w3.org/2001/XMLSchema-instance")
-                schemeAttr.Value = "BookmarkNode"
-                node.Attributes.Append(schemeAttr)
-                node.AppendChild(doc.CreateElement("Level")).InnerText = level.ToString
-                node.AppendChild(doc.CreateElement("IsExpanded")).InnerText = "true"
-                node.AppendChild(doc.CreateElement("Name")).InnerText = gitnode.Name
-                node.AppendChild(doc.CreateElement("IsLeaf")).InnerText = "true"
-                node.AppendChild(doc.CreateElement("Children"))
-                node.AppendChild(doc.CreateElement("RepoType")).InnerText = "Git"
-                node.AppendChild(doc.CreateElement("Path")).InnerText = gitnode.FullPath
-                xmlnode.AppendChild(node)
-                found = node
-            End If
-        Else
-            Dim found As Xml.XmlElement = Nothing
-            For Each node As Xml.XmlElement In xmlnode.ChildNodes
-                If node.Attributes("xsi:type").Value = "BookmarkFolderNode" And node.Item("Name").InnerText = gitnode.Name Then found = node
-            Next
-            If found Is Nothing Then
-                Dim node = doc.CreateElement("TreeViewNode")
-                Dim schemeAttr = doc.CreateAttribute("xsi", "type", "http://www.w3.org/2001/XMLSchema-instance")
-                schemeAttr.Value = "BookmarkFolderNode"
-                node.Attributes.Append(schemeAttr)
-                node.AppendChild(doc.CreateElement("Level")).InnerText = level.ToString
-                node.AppendChild(doc.CreateElement("IsExpanded")).InnerText = "false"
-                node.AppendChild(doc.CreateElement("Name")).InnerText = gitnode.Name
-                node.AppendChild(doc.CreateElement("IsLeaf")).InnerText = "true"
-                node.AppendChild(doc.CreateElement("Children"))
-                xmlnode.AppendChild(node)
-                found = node
-            End If
-            Dim xmlNodeChildrens = found("Children")
-            For Each child In gitnode.ChildNodes
-                ExportSourceTreeRecursive(doc, xmlNodeChildrens, child, level + 1)
-            Next
-            If xmlNodeChildrens.HasChildNodes Then found.Item("IsLeaf").InnerText = "false"
-        End If
+    Private Sub NotifyIconGood_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles NotifyIconGood.DoubleClick, NotifyIconWarning.DoubleClick
+        Me.Show()
     End Sub
 End Class
 

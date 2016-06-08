@@ -39,13 +39,14 @@ Partial Class GitManagerForm
         Me.menuCommand3 = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuCommand4 = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuCommand5 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
-        Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
-        Me.NotifyIcon1 = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ToolStripMenuItem2 = New System.Windows.Forms.ToolStripSeparator()
         Me.menuExportSourcetree = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
+        Me.bRescanRepositoriesPaths = New System.Windows.Forms.Button()
+        Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
+        Me.NotifyIconGood = New System.Windows.Forms.NotifyIcon(Me.components)
+        Me.NotifyIconWarning = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -74,7 +75,7 @@ Partial Class GitManagerForm
         '
         Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3, Me.menuCommand4, Me.menuCommand5, Me.ToolStripMenuItem2, Me.menuExportSourcetree})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(283, 280)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(283, 258)
         '
         'menuUpdateLocal
         '
@@ -141,6 +142,17 @@ Partial Class GitManagerForm
         Me.menuCommand5.Size = New System.Drawing.Size(282, 22)
         Me.menuCommand5.Text = "Команда 5"
         '
+        'ToolStripMenuItem2
+        '
+        Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
+        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(279, 6)
+        '
+        'menuExportSourcetree
+        '
+        Me.menuExportSourcetree.Name = "menuExportSourcetree"
+        Me.menuExportSourcetree.Size = New System.Drawing.Size(282, 22)
+        Me.menuExportSourcetree.Text = "Экспортировать в SourceTree"
+        '
         'ImageList1
         '
         Me.ImageList1.ImageStream = CType(resources.GetObject("ImageList1.ImageStream"), System.Windows.Forms.ImageListStreamer)
@@ -159,15 +171,15 @@ Partial Class GitManagerForm
         Me.ImageList1.Images.SetKeyName(11, "New Database.ico")
         Me.ImageList1.Images.SetKeyName(12, "Web Database.ico")
         '
-        'Button1
+        'bRescanRepositoriesPaths
         '
-        Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.Button1.Location = New System.Drawing.Point(2, 457)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(265, 23)
-        Me.Button1.TabIndex = 3
-        Me.Button1.Text = "Пересканировать "
-        Me.Button1.UseVisualStyleBackColor = True
+        Me.bRescanRepositoriesPaths.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.bRescanRepositoriesPaths.Location = New System.Drawing.Point(2, 457)
+        Me.bRescanRepositoriesPaths.Name = "bRescanRepositoriesPaths"
+        Me.bRescanRepositoriesPaths.Size = New System.Drawing.Size(265, 23)
+        Me.bRescanRepositoriesPaths.TabIndex = 3
+        Me.bRescanRepositoriesPaths.Text = "Пересканировать "
+        Me.bRescanRepositoriesPaths.UseVisualStyleBackColor = True
         '
         'TextBox1
         '
@@ -189,22 +201,16 @@ Partial Class GitManagerForm
         Me.ProgressBar1.Size = New System.Drawing.Size(479, 23)
         Me.ProgressBar1.TabIndex = 5
         '
-        'NotifyIcon1
+        'NotifyIconGood
         '
-        Me.NotifyIcon1.Icon = CType(resources.GetObject("NotifyIcon1.Icon"), System.Drawing.Icon)
-        Me.NotifyIcon1.Text = "Bwl Git Manager"
-        Me.NotifyIcon1.Visible = True
+        Me.NotifyIconGood.Icon = CType(resources.GetObject("NotifyIconGood.Icon"), System.Drawing.Icon)
+        Me.NotifyIconGood.Text = "Bwl Git Manager"
+        Me.NotifyIconGood.Visible = True
         '
-        'ToolStripMenuItem2
+        'NotifyIconWarning
         '
-        Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(279, 6)
-        '
-        'menuExportSourcetree
-        '
-        Me.menuExportSourcetree.Name = "menuExportSourcetree"
-        Me.menuExportSourcetree.Size = New System.Drawing.Size(282, 22)
-        Me.menuExportSourcetree.Text = "Экспортировать в SourceTree"
+        Me.NotifyIconWarning.Icon = CType(resources.GetObject("NotifyIconWarning.Icon"), System.Drawing.Icon)
+        Me.NotifyIconWarning.Text = "Bwl Git Manager"
         '
         'GitManagerForm
         '
@@ -213,13 +219,13 @@ Partial Class GitManagerForm
         Me.ClientSize = New System.Drawing.Size(764, 653)
         Me.Controls.Add(Me.ProgressBar1)
         Me.Controls.Add(Me.TextBox1)
-        Me.Controls.Add(Me.Button1)
+        Me.Controls.Add(Me.bRescanRepositoriesPaths)
         Me.Controls.Add(Me.TreeView1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "GitManagerForm"
         Me.Text = "Bwl Git Repository Manager"
         Me.Controls.SetChildIndex(Me.TreeView1, 0)
-        Me.Controls.SetChildIndex(Me.Button1, 0)
+        Me.Controls.SetChildIndex(Me.bRescanRepositoriesPaths, 0)
         Me.Controls.SetChildIndex(Me.logWriter, 0)
         Me.Controls.SetChildIndex(Me.TextBox1, 0)
         Me.Controls.SetChildIndex(Me.ProgressBar1, 0)
@@ -230,7 +236,7 @@ Partial Class GitManagerForm
     End Sub
 
     Friend WithEvents TreeView1 As TreeView
-    Friend WithEvents Button1 As Button
+    Friend WithEvents bRescanRepositoriesPaths As Button
     Friend WithEvents ImageList1 As ImageList
     Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
     Friend WithEvents menuUpdateLocal As ToolStripMenuItem
@@ -246,7 +252,8 @@ Partial Class GitManagerForm
     Friend WithEvents menuCommand4 As ToolStripMenuItem
     Friend WithEvents menuCommand5 As ToolStripMenuItem
     Friend WithEvents ProgressBar1 As ProgressBar
-    Friend WithEvents NotifyIcon1 As NotifyIcon
+    Friend WithEvents NotifyIconGood As NotifyIcon
     Friend WithEvents ToolStripMenuItem2 As ToolStripSeparator
     Friend WithEvents menuExportSourcetree As ToolStripMenuItem
+    Friend WithEvents NotifyIconWarning As NotifyIcon
 End Class
