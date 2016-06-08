@@ -55,7 +55,7 @@ Partial Class GitManagerForm
         '
         Me.logWriter.ExtendedView = False
         Me.logWriter.Location = New System.Drawing.Point(0, 484)
-        Me.logWriter.Size = New System.Drawing.Size(764, 169)
+        Me.logWriter.Size = New System.Drawing.Size(713, 169)
         '
         'TreeView1
         '
@@ -190,7 +190,7 @@ Partial Class GitManagerForm
         Me.TextBox1.Location = New System.Drawing.Point(273, 27)
         Me.TextBox1.Multiline = True
         Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(333, 424)
+        Me.TextBox1.Size = New System.Drawing.Size(282, 424)
         Me.TextBox1.TabIndex = 4
         '
         'ProgressBar1
@@ -199,7 +199,7 @@ Partial Class GitManagerForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ProgressBar1.Location = New System.Drawing.Point(273, 457)
         Me.ProgressBar1.Name = "ProgressBar1"
-        Me.ProgressBar1.Size = New System.Drawing.Size(487, 23)
+        Me.ProgressBar1.Size = New System.Drawing.Size(436, 23)
         Me.ProgressBar1.TabIndex = 5
         '
         'NotifyIconGood
@@ -215,8 +215,10 @@ Partial Class GitManagerForm
         '
         'actionButtons
         '
+        Me.actionButtons.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.actionButtons.AutoScroll = True
-        Me.actionButtons.Location = New System.Drawing.Point(612, 27)
+        Me.actionButtons.Location = New System.Drawing.Point(561, 27)
         Me.actionButtons.Name = "actionButtons"
         Me.actionButtons.Size = New System.Drawing.Size(148, 424)
         Me.actionButtons.TabIndex = 6
@@ -225,7 +227,7 @@ Partial Class GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(764, 653)
+        Me.ClientSize = New System.Drawing.Size(713, 653)
         Me.Controls.Add(Me.actionButtons)
         Me.Controls.Add(Me.ProgressBar1)
         Me.Controls.Add(Me.TextBox1)

@@ -1,7 +1,7 @@
 ﻿Public Class GitPathNode
     Public ReadOnly Property Name As String = "Root"
     Public ReadOnly Property FullPath As String = "#"
-    Public ReadOnly Property Status As GitRepositoryStatus
+    Public ReadOnly Property Status As New GitRepositoryStatus
     Public ReadOnly Property ChildNodes As New List(Of GitPathNode)
     Public Shared Event Progress(processed As Integer)
 

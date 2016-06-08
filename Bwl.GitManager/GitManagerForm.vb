@@ -133,13 +133,17 @@ Public Class GitManagerForm
             Me.Invoke(Sub() ShowRepTrees())
         Else
             TreeView1.Nodes.Clear()
+            Dim root = TreeView1.Nodes.Add("(все)")
+            root.Tag = _repTree
+
             For Each hive In _repTree.ChildNodes
-                Dim node = TreeView1.Nodes.Add(hive.Name)
+                Dim node = root.Nodes.Add(hive.Name)
                 node.Tag = hive
                 For Each child In hive.ChildNodes
                     AddRepNodesRecursive(node, child)
                 Next
             Next
+            root.Expand()
         End If
     End Sub
 
@@ -220,7 +224,7 @@ Public Class GitManagerForm
         _repTree.ResetProgress()
         Me.Invoke(Sub()
                       ProgressBar1.Value = 0
-                      ProgressBar1.Maximum = tree.GetChildCount(0)
+                      ProgressBar1.Maximum = tree.GetChildCount(True)
                   End Sub)
         StartInThread(Sub()
                           tree.UpdateFetch(True)
@@ -235,7 +239,7 @@ Public Class GitManagerForm
         _repTree.ResetProgress()
         Me.Invoke(Sub()
                       ProgressBar1.Value = 0
-                      ProgressBar1.Maximum = tree.GetChildCount(0)
+                      ProgressBar1.Maximum = tree.GetChildCount(True)
                   End Sub)
         StartInThread(Sub()
                           tree.UpdatePull(True)
