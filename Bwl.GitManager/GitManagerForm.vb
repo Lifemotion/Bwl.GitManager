@@ -314,20 +314,6 @@ Public Class GitManagerForm
         End If
     End Sub
 
-    Private Sub TreeView1_Click(sender As Object, e As EventArgs) Handles TreeView1.Click
-        Dim node = TreeView1.SelectedNode
-        If node IsNot Nothing Then
-            Dim repNode As GitPathNode = node.Tag
-            If repNode IsNot Nothing Then
-                If repNode.Status.IsRepository Then
-                    TextBox1.Text = repNode.Status.RawStatusText
-                Else
-                    TextBox1.Text = repNode.FullPath
-                End If
-            End If
-        End If
-    End Sub
-
     Private Sub GitManagerForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
@@ -345,6 +331,20 @@ Public Class GitManagerForm
 
     Private Sub NotifyIconGood_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles NotifyIconGood.DoubleClick, NotifyIconWarning.DoubleClick
         Me.Show()
+    End Sub
+
+    Private Sub TreeView1_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView1.AfterSelect
+        Dim node = TreeView1.SelectedNode
+        If node IsNot Nothing Then
+            Dim repNode As GitPathNode = node.Tag
+            If repNode IsNot Nothing Then
+                If repNode.Status.IsRepository Then
+                    TextBox1.Text = repNode.Status.RawStatusText
+                Else
+                    TextBox1.Text = repNode.FullPath
+                End If
+            End If
+        End If
     End Sub
 End Class
 
