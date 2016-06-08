@@ -89,6 +89,7 @@ Public Class GitManagerForm
                                                      End Sub)
         autoStatusThread.IsBackground = True
         autoStatusThread.Start()
+
     End Sub
 
     Private Sub RescanRepTrees()
