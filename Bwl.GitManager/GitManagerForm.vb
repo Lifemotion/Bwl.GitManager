@@ -90,6 +90,13 @@ Public Class GitManagerForm
         autoStatusThread.IsBackground = True
         autoStatusThread.Start()
 
+
+        AddHandler My.Application.StartupNextInstance, Sub()
+                                                           Me.Invoke(Sub()
+                                                                         Me.Hide()
+                                                                         Me.Show()
+                                                                     End Sub)
+                                                       End Sub
     End Sub
 
     Private Sub RescanRepTrees()
