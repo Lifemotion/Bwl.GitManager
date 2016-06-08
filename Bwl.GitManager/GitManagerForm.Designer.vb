@@ -47,6 +47,7 @@ Partial Class GitManagerForm
         Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
         Me.NotifyIconGood = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.NotifyIconWarning = New System.Windows.Forms.NotifyIcon(Me.components)
+        Me.actionButtons = New System.Windows.Forms.Panel()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -189,7 +190,7 @@ Partial Class GitManagerForm
         Me.TextBox1.Location = New System.Drawing.Point(273, 27)
         Me.TextBox1.Multiline = True
         Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(479, 424)
+        Me.TextBox1.Size = New System.Drawing.Size(333, 424)
         Me.TextBox1.TabIndex = 4
         '
         'ProgressBar1
@@ -198,7 +199,7 @@ Partial Class GitManagerForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ProgressBar1.Location = New System.Drawing.Point(273, 457)
         Me.ProgressBar1.Name = "ProgressBar1"
-        Me.ProgressBar1.Size = New System.Drawing.Size(479, 23)
+        Me.ProgressBar1.Size = New System.Drawing.Size(487, 23)
         Me.ProgressBar1.TabIndex = 5
         '
         'NotifyIconGood
@@ -212,11 +213,20 @@ Partial Class GitManagerForm
         Me.NotifyIconWarning.Icon = CType(resources.GetObject("NotifyIconWarning.Icon"), System.Drawing.Icon)
         Me.NotifyIconWarning.Text = "Bwl Git Manager"
         '
+        'actionButtons
+        '
+        Me.actionButtons.AutoScroll = True
+        Me.actionButtons.Location = New System.Drawing.Point(612, 27)
+        Me.actionButtons.Name = "actionButtons"
+        Me.actionButtons.Size = New System.Drawing.Size(148, 424)
+        Me.actionButtons.TabIndex = 6
+        '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(764, 653)
+        Me.Controls.Add(Me.actionButtons)
         Me.Controls.Add(Me.ProgressBar1)
         Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.bRescanRepositoriesPaths)
@@ -229,6 +239,7 @@ Partial Class GitManagerForm
         Me.Controls.SetChildIndex(Me.logWriter, 0)
         Me.Controls.SetChildIndex(Me.TextBox1, 0)
         Me.Controls.SetChildIndex(Me.ProgressBar1, 0)
+        Me.Controls.SetChildIndex(Me.actionButtons, 0)
         Me.ContextMenuStrip1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -256,4 +267,5 @@ Partial Class GitManagerForm
     Friend WithEvents ToolStripMenuItem2 As ToolStripSeparator
     Friend WithEvents menuExportSourcetree As ToolStripMenuItem
     Friend WithEvents NotifyIconWarning As NotifyIcon
+    Friend WithEvents actionButtons As Panel
 End Class
