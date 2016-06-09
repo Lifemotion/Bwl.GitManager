@@ -255,6 +255,7 @@ Public Class GitManagerForm
     Private Sub CommitRepository(rep As GitPathNode)
         StartInThread(Sub()
                           Dim msg = Me.Invoke(Function() tbCommitMessage.Text)
+                          If msg = "" Then msg = "(no message)"
                           Dim result0 = GitTool.RepositoryAdd(rep.FullPath, "*")
                           Dim result1 = GitTool.RepositoryCommit(rep.FullPath, msg)
                           _logger.AddMessage(result1)
