@@ -26,11 +26,12 @@ Partial Class GitManagerForm
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(GitManagerForm))
-        Me.TreeView1 = New System.Windows.Forms.TreeView()
+        Me.tvRepositories = New System.Windows.Forms.TreeView()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.menuUpdateLocal = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuFetch = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuPull = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuPullChanged = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
         Me.menuOpenExplorer = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuOpenCmd = New System.Windows.Forms.ToolStripMenuItem()
@@ -43,11 +44,13 @@ Partial Class GitManagerForm
         Me.menuExportSourcetree = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.bRescanRepositoriesPaths = New System.Windows.Forms.Button()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
-        Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
+        Me.tbStatus = New System.Windows.Forms.TextBox()
+        Me.pbProgress = New System.Windows.Forms.ProgressBar()
         Me.NotifyIconGood = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.NotifyIconWarning = New System.Windows.Forms.NotifyIcon(Me.components)
-        Me.actionButtons = New System.Windows.Forms.Panel()
+        Me.pActionButtons = New System.Windows.Forms.Panel()
+        Me.tbCommitMessage = New System.Windows.Forms.TextBox()
+        Me.bCommit = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -57,101 +60,107 @@ Partial Class GitManagerForm
         Me.logWriter.Location = New System.Drawing.Point(0, 484)
         Me.logWriter.Size = New System.Drawing.Size(713, 169)
         '
-        'TreeView1
+        'tvRepositories
         '
-        Me.TreeView1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.tvRepositories.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.TreeView1.ContextMenuStrip = Me.ContextMenuStrip1
-        Me.TreeView1.HideSelection = False
-        Me.TreeView1.ImageIndex = 0
-        Me.TreeView1.ImageList = Me.ImageList1
-        Me.TreeView1.ItemHeight = 16
-        Me.TreeView1.Location = New System.Drawing.Point(2, 27)
-        Me.TreeView1.Name = "TreeView1"
-        Me.TreeView1.SelectedImageIndex = 0
-        Me.TreeView1.Size = New System.Drawing.Size(265, 424)
-        Me.TreeView1.TabIndex = 2
+        Me.tvRepositories.ContextMenuStrip = Me.ContextMenuStrip1
+        Me.tvRepositories.HideSelection = False
+        Me.tvRepositories.ImageIndex = 0
+        Me.tvRepositories.ImageList = Me.ImageList1
+        Me.tvRepositories.ItemHeight = 16
+        Me.tvRepositories.Location = New System.Drawing.Point(2, 27)
+        Me.tvRepositories.Name = "tvRepositories"
+        Me.tvRepositories.SelectedImageIndex = 0
+        Me.tvRepositories.Size = New System.Drawing.Size(265, 424)
+        Me.tvRepositories.TabIndex = 2
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3, Me.menuCommand4, Me.menuCommand5, Me.ToolStripMenuItem2, Me.menuExportSourcetree})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.menuPullChanged, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3, Me.menuCommand4, Me.menuCommand5, Me.ToolStripMenuItem2, Me.menuExportSourcetree})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(283, 258)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(335, 280)
         '
         'menuUpdateLocal
         '
         Me.menuUpdateLocal.Name = "menuUpdateLocal"
-        Me.menuUpdateLocal.Size = New System.Drawing.Size(282, 22)
-        Me.menuUpdateLocal.Text = "Обновить локальное состояние"
+        Me.menuUpdateLocal.Size = New System.Drawing.Size(334, 22)
+        Me.menuUpdateLocal.Text = "Проверить локальное состояние (status)"
         '
         'menuFetch
         '
         Me.menuFetch.Name = "menuFetch"
-        Me.menuFetch.Size = New System.Drawing.Size(282, 22)
-        Me.menuFetch.Text = "Обновить состояние с сервера (fetch)"
+        Me.menuFetch.Size = New System.Drawing.Size(334, 22)
+        Me.menuFetch.Text = "Проверить состояние с сервера (fetch)"
         '
         'menuPull
         '
         Me.menuPull.Name = "menuPull"
-        Me.menuPull.Size = New System.Drawing.Size(282, 22)
-        Me.menuPull.Text = "Актуализировать с сервера (pull)"
+        Me.menuPull.Size = New System.Drawing.Size(334, 22)
+        Me.menuPull.Text = "Актуализировать с сервера все (pull)"
+        '
+        'menuPullChanged
+        '
+        Me.menuPullChanged.Name = "menuPullChanged"
+        Me.menuPullChanged.Size = New System.Drawing.Size(334, 22)
+        Me.menuPullChanged.Text = "Актуализировать с сервера обновленные (pull)"
         '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(279, 6)
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(331, 6)
         '
         'menuOpenExplorer
         '
         Me.menuOpenExplorer.Name = "menuOpenExplorer"
-        Me.menuOpenExplorer.Size = New System.Drawing.Size(282, 22)
+        Me.menuOpenExplorer.Size = New System.Drawing.Size(334, 22)
         Me.menuOpenExplorer.Text = "Открыть папку"
         '
         'menuOpenCmd
         '
         Me.menuOpenCmd.Name = "menuOpenCmd"
-        Me.menuOpenCmd.Size = New System.Drawing.Size(282, 22)
+        Me.menuOpenCmd.Size = New System.Drawing.Size(334, 22)
         Me.menuOpenCmd.Text = "Открыть коммандную строку"
         '
         'menuCommand1
         '
         Me.menuCommand1.Name = "menuCommand1"
-        Me.menuCommand1.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand1.Size = New System.Drawing.Size(334, 22)
         Me.menuCommand1.Text = "Команда 1"
         '
         'menuCommand2
         '
         Me.menuCommand2.Name = "menuCommand2"
-        Me.menuCommand2.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand2.Size = New System.Drawing.Size(334, 22)
         Me.menuCommand2.Text = "Команда 2"
         '
         'menuCommand3
         '
         Me.menuCommand3.Name = "menuCommand3"
-        Me.menuCommand3.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand3.Size = New System.Drawing.Size(334, 22)
         Me.menuCommand3.Text = "Команда 3"
         '
         'menuCommand4
         '
         Me.menuCommand4.Name = "menuCommand4"
-        Me.menuCommand4.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand4.Size = New System.Drawing.Size(334, 22)
         Me.menuCommand4.Text = "Команда 4"
         '
         'menuCommand5
         '
         Me.menuCommand5.Name = "menuCommand5"
-        Me.menuCommand5.Size = New System.Drawing.Size(282, 22)
+        Me.menuCommand5.Size = New System.Drawing.Size(334, 22)
         Me.menuCommand5.Text = "Команда 5"
         '
         'ToolStripMenuItem2
         '
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(279, 6)
+        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(331, 6)
         '
         'menuExportSourcetree
         '
         Me.menuExportSourcetree.Name = "menuExportSourcetree"
-        Me.menuExportSourcetree.Size = New System.Drawing.Size(282, 22)
+        Me.menuExportSourcetree.Size = New System.Drawing.Size(334, 22)
         Me.menuExportSourcetree.Text = "Экспортировать в SourceTree"
         '
         'ImageList1
@@ -182,25 +191,25 @@ Partial Class GitManagerForm
         Me.bRescanRepositoriesPaths.Text = "Пересканировать "
         Me.bRescanRepositoriesPaths.UseVisualStyleBackColor = True
         '
-        'TextBox1
+        'tbStatus
         '
-        Me.TextBox1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.tbStatus.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBox1.Location = New System.Drawing.Point(273, 27)
-        Me.TextBox1.Multiline = True
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(282, 424)
-        Me.TextBox1.TabIndex = 4
+        Me.tbStatus.Location = New System.Drawing.Point(273, 27)
+        Me.tbStatus.Multiline = True
+        Me.tbStatus.Name = "tbStatus"
+        Me.tbStatus.Size = New System.Drawing.Size(282, 338)
+        Me.tbStatus.TabIndex = 4
         '
-        'ProgressBar1
+        'pbProgress
         '
-        Me.ProgressBar1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.pbProgress.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ProgressBar1.Location = New System.Drawing.Point(273, 457)
-        Me.ProgressBar1.Name = "ProgressBar1"
-        Me.ProgressBar1.Size = New System.Drawing.Size(436, 23)
-        Me.ProgressBar1.TabIndex = 5
+        Me.pbProgress.Location = New System.Drawing.Point(273, 457)
+        Me.pbProgress.Name = "pbProgress"
+        Me.pbProgress.Size = New System.Drawing.Size(436, 23)
+        Me.pbProgress.TabIndex = 5
         '
         'NotifyIconGood
         '
@@ -213,42 +222,69 @@ Partial Class GitManagerForm
         Me.NotifyIconWarning.Icon = CType(resources.GetObject("NotifyIconWarning.Icon"), System.Drawing.Icon)
         Me.NotifyIconWarning.Text = "Bwl Git Manager"
         '
-        'actionButtons
+        'pActionButtons
         '
-        Me.actionButtons.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.pActionButtons.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.actionButtons.AutoScroll = True
-        Me.actionButtons.Location = New System.Drawing.Point(561, 27)
-        Me.actionButtons.Name = "actionButtons"
-        Me.actionButtons.Size = New System.Drawing.Size(148, 424)
-        Me.actionButtons.TabIndex = 6
+        Me.pActionButtons.AutoScroll = True
+        Me.pActionButtons.Location = New System.Drawing.Point(561, 27)
+        Me.pActionButtons.Name = "pActionButtons"
+        Me.pActionButtons.Size = New System.Drawing.Size(148, 424)
+        Me.pActionButtons.TabIndex = 6
+        '
+        'tbCommitMessage
+        '
+        Me.tbCommitMessage.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbCommitMessage.Enabled = False
+        Me.tbCommitMessage.Location = New System.Drawing.Point(273, 371)
+        Me.tbCommitMessage.Multiline = True
+        Me.tbCommitMessage.Name = "tbCommitMessage"
+        Me.tbCommitMessage.Size = New System.Drawing.Size(282, 49)
+        Me.tbCommitMessage.TabIndex = 7
+        '
+        'bCommit
+        '
+        Me.bCommit.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bCommit.Enabled = False
+        Me.bCommit.Location = New System.Drawing.Point(273, 426)
+        Me.bCommit.Name = "bCommit"
+        Me.bCommit.Size = New System.Drawing.Size(282, 23)
+        Me.bCommit.TabIndex = 8
+        Me.bCommit.Text = "Зафиксировать и отправить"
+        Me.bCommit.UseVisualStyleBackColor = True
         '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(713, 653)
-        Me.Controls.Add(Me.actionButtons)
-        Me.Controls.Add(Me.ProgressBar1)
-        Me.Controls.Add(Me.TextBox1)
+        Me.Controls.Add(Me.bCommit)
+        Me.Controls.Add(Me.tbCommitMessage)
+        Me.Controls.Add(Me.pActionButtons)
+        Me.Controls.Add(Me.pbProgress)
+        Me.Controls.Add(Me.tbStatus)
         Me.Controls.Add(Me.bRescanRepositoriesPaths)
-        Me.Controls.Add(Me.TreeView1)
+        Me.Controls.Add(Me.tvRepositories)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "GitManagerForm"
         Me.Text = "Bwl Git Repository Manager"
-        Me.Controls.SetChildIndex(Me.TreeView1, 0)
+        Me.Controls.SetChildIndex(Me.tvRepositories, 0)
         Me.Controls.SetChildIndex(Me.bRescanRepositoriesPaths, 0)
         Me.Controls.SetChildIndex(Me.logWriter, 0)
-        Me.Controls.SetChildIndex(Me.TextBox1, 0)
-        Me.Controls.SetChildIndex(Me.ProgressBar1, 0)
-        Me.Controls.SetChildIndex(Me.actionButtons, 0)
+        Me.Controls.SetChildIndex(Me.tbStatus, 0)
+        Me.Controls.SetChildIndex(Me.pbProgress, 0)
+        Me.Controls.SetChildIndex(Me.pActionButtons, 0)
+        Me.Controls.SetChildIndex(Me.tbCommitMessage, 0)
+        Me.Controls.SetChildIndex(Me.bCommit, 0)
         Me.ContextMenuStrip1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents TreeView1 As TreeView
+    Friend WithEvents tvRepositories As TreeView
     Friend WithEvents bRescanRepositoriesPaths As Button
     Friend WithEvents ImageList1 As ImageList
     Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
@@ -261,13 +297,16 @@ Partial Class GitManagerForm
     Friend WithEvents menuCommand1 As ToolStripMenuItem
     Friend WithEvents menuCommand2 As ToolStripMenuItem
     Friend WithEvents menuCommand3 As ToolStripMenuItem
-    Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents tbStatus As TextBox
     Friend WithEvents menuCommand4 As ToolStripMenuItem
     Friend WithEvents menuCommand5 As ToolStripMenuItem
-    Friend WithEvents ProgressBar1 As ProgressBar
+    Friend WithEvents pbProgress As ProgressBar
     Friend WithEvents NotifyIconGood As NotifyIcon
     Friend WithEvents ToolStripMenuItem2 As ToolStripSeparator
     Friend WithEvents menuExportSourcetree As ToolStripMenuItem
     Friend WithEvents NotifyIconWarning As NotifyIcon
-    Friend WithEvents actionButtons As Panel
+    Friend WithEvents pActionButtons As Panel
+    Friend WithEvents menuPullChanged As ToolStripMenuItem
+    Friend WithEvents tbCommitMessage As TextBox
+    Friend WithEvents bCommit As Button
 End Class

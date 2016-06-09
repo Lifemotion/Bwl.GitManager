@@ -52,6 +52,16 @@
         Return result
     End Function
 
+    Public Shared Function RepositoryCommit(repository As String, message As String) As String
+        Dim result = Execute(repository, "commit -a -m """ + message + """")
+        Return result
+    End Function
+
+    Public Shared Function RepositoryAdd(repository As String, filter As String) As String
+        Dim result = Execute(repository, "add " + filter)
+        Return result
+    End Function
+
     Public Shared Function GetRepositoryStatus(repository As String) As GitRepositoryStatus
         Dim status As New GitRepositoryStatus
         Dim result = Execute(repository, " -c advice.statusHints=false status").ToLower.Replace(vbLf, vbCrLf)
@@ -68,6 +78,7 @@
             If status.IsDeletedFiles Then status.IsUncommittedChanges = True
 
             If result.Contains("branch is behind") Then status.CanPull = True
+            If result.Contains("have diverged") Then status.CanPull = True : status.CanPush = True
             If result.Contains("branch is ahead") Then status.CanPush = True
             If result.Contains("branch is up-to-date") Then status.UpToDate = True
 

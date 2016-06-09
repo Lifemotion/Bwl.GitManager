@@ -10,6 +10,8 @@ Public Class GitManagerForm
     Private _command5Setting As New StringSetting(_storage, "Command5", "")
     Private _autoFetchEveryMinutes As New IntegerSetting(_storage, "AutoFetchEveryMinutes", 0)
     Private _autoUpdateLocalEveryMinutes As New IntegerSetting(_storage, "AutoStatusEveryMinutes", 0)
+    Private _showCommandsAsButtons As New BooleanSetting(_storage, "ShowCommandsAsButtons", False)
+
     Private _lastRepCount As New IntegerSetting(_storage, "LastRepositoryCount", 0)
     Private _repTree As New GitPathNode()
     Private _progressThread As Threading.Thread
@@ -53,11 +55,11 @@ Public Class GitManagerForm
         End Try
         AddHandler GitTool.Progress, Sub(found As Integer)
                                          _lastRepCount.Value = found
-                                         Me.Invoke(Sub() If found <= ProgressBar1.Maximum Then ProgressBar1.Value = found)
+                                         Me.Invoke(Sub() If found <= pbProgress.Maximum Then pbProgress.Value = found)
                                      End Sub
         AddHandler GitPathNode.Progress, Sub(found As Integer)
                                              _lastRepCount.Value = found
-                                             Me.Invoke(Sub() If found <= ProgressBar1.Maximum Then ProgressBar1.Value = found)
+                                             Me.Invoke(Sub() If found <= pbProgress.Maximum Then pbProgress.Value = found)
                                          End Sub
         RescanRepTrees()
         Dim autoFetchThread As New Threading.Thread(Sub()
@@ -108,8 +110,8 @@ Public Class GitManagerForm
     Private Sub RescanRepTreesWorker()
         Me.Invoke(Sub()
                       If _lastRepCount.Value < 0 Then _lastRepCount.Value = 0
-                      Me.ProgressBar1.Value = 0
-                      Me.ProgressBar1.Maximum = _lastRepCount.Value
+                      Me.pbProgress.Value = 0
+                      Me.pbProgress.Maximum = _lastRepCount.Value
                   End Sub)
         GitTool.ProgressReset()
         Threading.Thread.Sleep(500)
@@ -125,15 +127,15 @@ Public Class GitManagerForm
         _logger.AddMessage("Обновление списка репозиториев завершено")
         _repTree = newRepTree
         ShowRepTrees()
-        Me.Invoke(Sub() Me.ProgressBar1.Value = 0)
+        Me.Invoke(Sub() Me.pbProgress.Value = 0)
     End Sub
 
     Private Sub ShowRepTrees()
         If Me.InvokeRequired Then
             Me.Invoke(Sub() ShowRepTrees())
         Else
-            TreeView1.Nodes.Clear()
-            Dim root = TreeView1.Nodes.Add("(все)")
+            tvRepositories.Nodes.Clear()
+            Dim root = tvRepositories.Nodes.Add("(все)")
             root.Tag = _repTree
 
             For Each hive In _repTree.ChildNodes
@@ -191,7 +193,7 @@ Public Class GitManagerForm
             Me.Invoke(Sub() RefreshNodeAll())
         Else
             Dim changes = False
-            For Each node As TreeNode In TreeView1.Nodes
+            For Each node As TreeNode In tvRepositories.Nodes
                 RefreshNodeRecursive(node)
                 If node.ImageIndex > 1 Then changes = True
             Next
@@ -208,45 +210,60 @@ Public Class GitManagerForm
     Private Sub UpdateTree(tree As GitPathNode)
         _repTree.ResetProgress()
         Me.Invoke(Sub()
-                      ProgressBar1.Value = 0
-                      ProgressBar1.Maximum = tree.GetChildCount(True)
+                      pbProgress.Value = 0
+                      pbProgress.Maximum = tree.GetChildCount(True)
                   End Sub)
         StartInThread(Sub()
                           tree.UpdateStatus(True, False)
                           RefreshNodeAll()
                           _progressThread = Nothing
                           _logger.AddMessage("Завершено Update")
-                          Me.Invoke(Sub() ProgressBar1.Value = 0)
+                          Me.Invoke(Sub() pbProgress.Value = 0)
                       End Sub)
     End Sub
 
     Private Sub FetchTree(tree As GitPathNode)
         _repTree.ResetProgress()
         Me.Invoke(Sub()
-                      ProgressBar1.Value = 0
-                      ProgressBar1.Maximum = tree.GetChildCount(True)
+                      pbProgress.Value = 0
+                      pbProgress.Maximum = tree.GetChildCount(True)
                   End Sub)
         StartInThread(Sub()
                           tree.UpdateFetch(True)
                           RefreshNodeAll()
                           _progressThread = Nothing
                           _logger.AddMessage("Завершено Fetch")
-                          Me.Invoke(Sub() ProgressBar1.Value = 0)
+                          Me.Invoke(Sub() pbProgress.Value = 0)
                       End Sub)
     End Sub
 
-    Private Sub PullTree(tree As GitPathNode)
+    Private Sub PullTree(tree As GitPathNode, onlyChanged As Boolean)
         _repTree.ResetProgress()
         Me.Invoke(Sub()
-                      ProgressBar1.Value = 0
-                      ProgressBar1.Maximum = tree.GetChildCount(True)
+                      pbProgress.Value = 0
+                      pbProgress.Maximum = tree.GetChildCount(True)
                   End Sub)
         StartInThread(Sub()
-                          tree.UpdatePull(True)
+                          tree.UpdatePull(True, onlyChanged)
                           RefreshNodeAll()
                           _progressThread = Nothing
                           _logger.AddMessage("Завершено Pull")
-                          Me.Invoke(Sub() ProgressBar1.Value = 0)
+                          Me.Invoke(Sub() pbProgress.Value = 0)
+                      End Sub)
+    End Sub
+
+    Private Sub CommitRepository(rep As GitPathNode)
+        StartInThread(Sub()
+                          Dim msg = Me.Invoke(Function() tbCommitMessage.Text)
+                          Dim result0 = GitTool.RepositoryAdd(rep.FullPath, "*")
+                          Dim result1 = GitTool.RepositoryCommit(rep.FullPath, msg)
+                          _logger.AddMessage(result1)
+                          Dim result2 = GitTool.RepositoryPush(rep.FullPath)
+                          rep.UpdateFetch(False)
+                          RefreshNodeAll()
+                          _progressThread = Nothing
+                          _logger.AddMessage("Завершено Commit")
+                          Me.Invoke(Sub() pbProgress.Value = 0)
                       End Sub)
     End Sub
 
@@ -255,7 +272,7 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub menuUpdateLocal_Click(sender As Object, e As EventArgs) Handles menuUpdateLocal.Click
-        Dim node = TreeView1.SelectedNode
+        Dim node = tvRepositories.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
             If repNode IsNot Nothing Then UpdateTree(repNode)
@@ -263,7 +280,7 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub menuFetch_Click(sender As Object, e As EventArgs) Handles menuFetch.Click
-        Dim node = TreeView1.SelectedNode
+        Dim node = tvRepositories.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
             If repNode IsNot Nothing Then FetchTree(repNode)
@@ -271,15 +288,23 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub menuPull_Click(sender As Object, e As EventArgs) Handles menuPull.Click
-        Dim node = TreeView1.SelectedNode
+        Dim node = tvRepositories.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
-            If repNode IsNot Nothing Then PullTree(repNode)
+            If repNode IsNot Nothing Then PullTree(repNode, False)
+        End If
+    End Sub
+
+    Private Sub menuPullChanged_Click(sender As Object, e As EventArgs) Handles menuPullChanged.Click
+        Dim node = tvRepositories.SelectedNode
+        If node IsNot Nothing Then
+            Dim repNode As GitPathNode = node.Tag
+            If repNode IsNot Nothing Then PullTree(repNode, True)
         End If
     End Sub
 
     Private Sub menuOpenExplorer_Click(sender As Object, e As EventArgs) Handles menuOpenExplorer.Click
-        Dim node = TreeView1.SelectedNode
+        Dim node = tvRepositories.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
             If repNode IsNot Nothing Then Shell("explorer """ + repNode.FullPath + """", vbNormalFocus)
@@ -287,7 +312,7 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub menuOpenCmd_Click(sender As Object, e As EventArgs) Handles menuOpenCmd.Click
-        Dim node = TreeView1.SelectedNode
+        Dim node = tvRepositories.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
             If repNode IsNot Nothing Then
@@ -299,12 +324,12 @@ Public Class GitManagerForm
         End If
     End Sub
 
-    Private Sub TreeView1_MouseDown(sender As Object, e As MouseEventArgs) Handles TreeView1.MouseDown
-        TreeView1.SelectedNode = TreeView1.GetNodeAt(e.X, e.Y)
+    Private Sub TreeView1_MouseDown(sender As Object, e As MouseEventArgs) Handles tvRepositories.MouseDown
+        tvRepositories.SelectedNode = tvRepositories.GetNodeAt(e.X, e.Y)
     End Sub
 
     Private Sub menuCommand1_Click(sender As Object, e As EventArgs) Handles menuCommand1.Click, menuCommand2.Click, menuCommand3.Click
-        Dim node = TreeView1.SelectedNode
+        Dim node = tvRepositories.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
             If repNode IsNot Nothing Then
@@ -342,9 +367,9 @@ Public Class GitManagerForm
     Private Sub CreateActionButton(name As String, repPath As String, cmd As String, args As String, useShell As Boolean)
         Dim button As New Button()
         button.Text = name
-        button.Width = actionButtons.Width - 10
+        button.Width = pActionButtons.Width - 10
         button.Height = 30
-        actionButtons.Controls.Add(button)
+        pActionButtons.Controls.Add(button)
         button.Left = 5
         button.Top = (button.Height + 5) * _actionButtonCount
         _actionButtonCount += 1
@@ -361,21 +386,44 @@ Public Class GitManagerForm
                                  End Sub
     End Sub
 
-    Private Sub CleanActionButtons()
-        _actionButtonCount = 0
-        actionButtons.Controls.Clear()
+    Private Sub CreateActionButtonCommand(command As String, repPath As String)
+        Dim parts = command.Split({"|"}, StringSplitOptions.None)
+        If parts.Length > 2 Then
+            CreateActionButton(parts(0), repPath, parts(1), parts(2), False)
+        End If
     End Sub
 
-    Private Sub TreeView1_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView1.AfterSelect
+    Private Sub CleanActionButtons()
+        _actionButtonCount = 0
+        pActionButtons.Controls.Clear()
+    End Sub
+
+    Private Sub TreeView1_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tvRepositories.AfterSelect
         CleanActionButtons()
-        Dim node = TreeView1.SelectedNode
+        Dim node = tvRepositories.SelectedNode
         If node IsNot Nothing Then
             Dim repNode As GitPathNode = node.Tag
             If repNode IsNot Nothing Then
                 If repNode.Status.IsRepository Then
-                    TextBox1.Text = repNode.Status.RawStatusText
+                    tbStatus.Text = repNode.Status.RawStatusText
+                    tbCommitMessage.Text = ""
+                    If repNode.Status.IsUncommittedChanges Then
+                        tbCommitMessage.Enabled = True
+                        bCommit.Enabled = True
+                    Else
+                        tbCommitMessage.Enabled = False
+                        bCommit.Enabled = False
+                    End If
                     'create buttons
                     CreateActionButton("Explorer", repNode.FullPath, "explorer", ".", False)
+
+                    If _showCommandsAsButtons.Value Then
+                        If _command1Setting.Value > "" Then CreateActionButtonCommand(_command1Setting.Value, repNode.FullPath)
+                        If _command2Setting.Value > "" Then CreateActionButtonCommand(_command2Setting.Value, repNode.FullPath)
+                        If _command3Setting.Value > "" Then CreateActionButtonCommand(_command3Setting.Value, repNode.FullPath)
+                        If _command4Setting.Value > "" Then CreateActionButtonCommand(_command4Setting.Value, repNode.FullPath)
+                        If _command5Setting.Value > "" Then CreateActionButtonCommand(_command5Setting.Value, repNode.FullPath)
+                    End If
 
                     For Each file In IO.Directory.GetFiles(repNode.FullPath, "*.cmd")
                         Dim info As New IO.FileInfo(file)
@@ -393,9 +441,17 @@ Public Class GitManagerForm
                     Next
                 Else
                     CreateActionButton("Explorer", repNode.FullPath, "explorer", ".", False)
-                    TextBox1.Text = repNode.FullPath
+                    tbStatus.Text = repNode.FullPath
                 End If
             End If
+        End If
+    End Sub
+
+    Private Sub bCommit_Click(sender As Object, e As EventArgs) Handles bCommit.Click
+        Dim node = tvRepositories.SelectedNode
+        If node IsNot Nothing Then
+            Dim repNode As GitPathNode = node.Tag
+            If repNode IsNot Nothing Then CommitRepository(repNode)
         End If
     End Sub
 End Class

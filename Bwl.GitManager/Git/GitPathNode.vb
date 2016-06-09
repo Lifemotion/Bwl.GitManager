@@ -42,15 +42,15 @@
         _progress = 0
     End Sub
 
-    Public Sub UpdatePull(recursive As Boolean)
+    Public Sub UpdatePull(recursive As Boolean, onlyChanged As Boolean)
         _progress += 1 : RaiseEvent Progress(_progress)
         If FullPath <> "#" Then
-            GitTool.RepositoryPull(FullPath)
+            If Status.CanPull Or onlyChanged = False Then GitTool.RepositoryPull(FullPath)
             _Status = GitTool.GetRepositoryStatus(FullPath)
-        End If
-        If recursive Then
+            End If
+            If recursive Then
             For Each child In ChildNodes
-                child.UpdatePull(recursive)
+                child.UpdatePull(recursive, onlyChanged)
             Next
         End If
     End Sub
