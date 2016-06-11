@@ -118,6 +118,7 @@ Public Class GitManagerForm
         _logger.AddMessage("Обновление списка репозиториев...")
         Dim newRepTree As New GitPathNode
         For Each path In _repPathSetting.Value.Split({";", ","}, StringSplitOptions.RemoveEmptyEntries)
+            path = path.Trim
             _logger.AddInformation(path)
             Dim tree = GitTool.GetRepositoriesTree(path)
             If tree IsNot Nothing Then
