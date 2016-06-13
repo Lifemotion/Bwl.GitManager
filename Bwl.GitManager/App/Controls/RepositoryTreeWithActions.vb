@@ -35,9 +35,9 @@
         SetStatus("", Nothing, GitManager.Settings.LastRepCount.Value, -1)
     End Sub
 
-    Private Sub StartInThread(tree As GitPathNode, operationText As String, operatioMaximum As Integer, actionDelegate As Threading.ThreadStart)
+    Private Sub StartInThread(tree As GitPathNode, operationText As String, operatioMaximum As Integer, actionDelegate As Threading.ThreadStart, noError As Boolean)
         If _progressThread IsNot Nothing Then
-            MsgBox("Предыдущая операция не завершена", MsgBoxStyle.Exclamation)
+            If Not noError Then MsgBox("Предыдущая операция не завершена", MsgBoxStyle.Exclamation)
         Else
             _repTree.ResetProgress()
             SetStatus(operationText, tree, operatioMaximum, 0)
@@ -52,28 +52,28 @@
         End If
     End Sub
 
-    Public Sub UpdateTree(tree As GitPathNode)
-        StartInThread(tree, "Обновление (status)", tree.GetChildCount(True), Sub() tree.UpdateStatus(True, False))
+    Public Sub UpdateTree(tree As GitPathNode, noError As Boolean)
+        StartInThread(tree, "Обновление (status)", tree.GetChildCount(True), Sub() tree.UpdateStatus(True, False), noError)
     End Sub
 
     Public Sub UpdateSelected()
-        If SelectedRepNode IsNot Nothing Then UpdateTree(SelectedRepNode)
+        If SelectedRepNode IsNot Nothing Then UpdateTree(SelectedRepNode, False)
     End Sub
 
-    Public Sub FetchTree(tree As GitPathNode)
-        StartInThread(tree, "Обновление (fetch)", tree.GetChildCount(True), Sub() tree.UpdateFetch(True, False))
+    Public Sub FetchTree(tree As GitPathNode, noError As Boolean)
+        StartInThread(tree, "Обновление (fetch)", tree.GetChildCount(True), Sub() tree.UpdateFetch(True, False), noError)
     End Sub
 
     Public Sub FetchSelected()
-        If SelectedRepNode IsNot Nothing Then FetchTree(SelectedRepNode)
+        If SelectedRepNode IsNot Nothing Then FetchTree(SelectedRepNode, False)
     End Sub
 
-    Public Sub PullTree(tree As GitPathNode, onlyChanged As Boolean)
-        StartInThread(tree, "Актуализация (pull)", tree.GetChildCount(True), Sub() tree.UpdatePull(True, onlyChanged))
+    Public Sub PullTree(tree As GitPathNode, onlyChanged As Boolean, noError As Boolean)
+        StartInThread(tree, "Актуализация (pull)", tree.GetChildCount(True), Sub() tree.UpdatePull(True, onlyChanged), noError)
     End Sub
 
     Public Sub PullSelected(onlyChanged As Boolean)
-        If SelectedRepNode IsNot Nothing Then PullTree(SelectedRepNode, onlyChanged)
+        If SelectedRepNode IsNot Nothing Then PullTree(SelectedRepNode, onlyChanged, False)
     End Sub
 
     Private Sub menuUpdateLocal_Click(sender As Object, e As EventArgs) Handles menuUpdateLocal.Click
@@ -129,7 +129,7 @@
                                                             If GitManager.Settings.AutoFetchEveryMinutes.Value > 0 Then
                                                                 Threading.Thread.Sleep(1000 * 60 * GitManager.Settings.AutoFetchEveryMinutes.Value)
                                                                 Try
-                                                                    FetchTree(_repTree)
+                                                                    FetchTree(_repTree, True)
                                                                 Catch ex As Exception
                                                                 End Try
                                                             End If
@@ -144,7 +144,7 @@
                                                              If GitManager.Settings.AutoUpdateLocalEveryMinutes.Value > 0 Then
                                                                  Threading.Thread.Sleep(1000 * 60 * GitManager.Settings.AutoUpdateLocalEveryMinutes.Value)
                                                                  Try
-                                                                     UpdateTree(_repTree)
+                                                                     UpdateTree(_repTree, True)
                                                                  Catch ex As Exception
                                                                  End Try
                                                              End If
