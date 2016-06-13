@@ -38,92 +38,69 @@
     End Function
 
     Public Shared Function RepositoryFetch(repository As String) As String
+        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "fetch").ToLower
-        Return result
+            Return result
     End Function
 
     Public Shared Function RepositoryPull(repository As String) As String
+        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "pull").ToLower
         Return result
     End Function
 
     Public Shared Function RepositoryPush(repository As String) As String
+        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "push").ToLower
         Return result
     End Function
 
     Public Shared Function RepositoryCommit(repository As String, message As String) As String
+        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "commit -a -m """ + message + """")
         Return result
     End Function
 
     Public Shared Function RepositoryAdd(repository As String, filter As String) As String
+        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "add " + filter)
+        Return result
+    End Function
+
+    Public Shared Function RepositoryLog(repository As String, graph As Boolean, count As Integer) As String
+        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        Dim cmd = "log --pretty=format:""%h %cd %d %s"""
+        If count > 0 Then cmd += " -" + count.ToString
+        If graph Then cmd += " --graph"
+        Dim result = Execute(repository, cmd).Replace(vbLf, vbCrLf)
         Return result
     End Function
 
     Public Shared Function GetRepositoryStatus(repository As String) As GitRepositoryStatus
         Dim status As New GitRepositoryStatus
-        Dim result = Execute(repository, " -c advice.statusHints=false status").ToLower.Replace(vbLf, vbCrLf)
-        status.RawStatusText = result
-        If result.Contains("not a git repository") Then
-            status.IsRepository = False
+        If IO.Directory.Exists(repository) Then
+            Dim result = Execute(repository, " -c advice.statusHints=false status").ToLower.Replace(vbLf, vbCrLf)
+            status.RawStatusText = result
+            If result.Contains("not a git repository") Then
+                status.IsRepository = False
+            Else
+                status.IsRepository = True
+                If result.Contains("untracked") Then status.IsUntrackedFiles = True
+                If result.Contains("modified") Then status.IsModifiedFiles = True
+                If result.Contains("deleted") Then status.IsDeletedFiles = True
+                If status.IsUntrackedFiles Then status.IsUncommittedChanges = True
+                If status.IsModifiedFiles Then status.IsUncommittedChanges = True
+                If status.IsDeletedFiles Then status.IsUncommittedChanges = True
+
+                If result.Contains("branch is behind") Then status.CanPull = True
+                If result.Contains("have diverged") Then status.CanPull = True : status.CanPush = True
+                If result.Contains("branch is ahead") Then status.CanPush = True
+                If result.Contains("branch is up-to-date") Then status.UpToDate = True
+
+            End If
         Else
-            status.IsRepository = True
-            If result.Contains("untracked") Then status.IsUntrackedFiles = True
-            If result.Contains("modified") Then status.IsModifiedFiles = True
-            If result.Contains("deleted") Then status.IsDeletedFiles = True
-            If status.IsUntrackedFiles Then status.IsUncommittedChanges = True
-            If status.IsModifiedFiles Then status.IsUncommittedChanges = True
-            If status.IsDeletedFiles Then status.IsUncommittedChanges = True
-
-            If result.Contains("branch is behind") Then status.CanPull = True
-            If result.Contains("have diverged") Then status.CanPull = True : status.CanPush = True
-            If result.Contains("branch is ahead") Then status.CanPush = True
-            If result.Contains("branch is up-to-date") Then status.UpToDate = True
-
+            status.RawStatusText = "directory not exists"
         End If
         Return status
     End Function
-
-    Public Shared Function ContainsRepositories(node As GitPathNode) As Boolean
-        If node.Status.IsRepository Then
-            Return True
-        Else
-            For Each rc In node.ChildNodes
-                If ContainsRepositories(rc) Then Return True
-            Next
-        End If
-        Return False
-    End Function
-
-    Public Shared Event Progress(repositoriesFound As Integer)
-
-    Private Shared _repositoriesCount As Integer
-
-    Public Shared Sub ProgressReset()
-        _repositoriesCount = 0
-    End Sub
-
-    Public Shared Function GetRepositoriesTree(rootPath As String) As GitPathNode
-        If IO.Directory.Exists(rootPath) Then
-            Dim rep = New GitPathNode(rootPath)
-            rep.UpdateStatus(False, True)
-            If rep.Status.IsRepository Then
-                _repositoriesCount += 1
-                RaiseEvent Progress(_repositoriesCount)
-                Return rep
-            Else
-                Dim childs = IO.Directory.GetDirectories(rootPath)
-                For Each child In childs
-                    Dim repChild = GetRepositoriesTree(child)
-                    If ContainsRepositories(repChild) Then rep.ChildNodes.Add(repChild)
-                Next
-                Return rep
-            End If
-        Else
-            Return Nothing
-        End If
-    End Function
-
 End Class

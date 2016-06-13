@@ -59,5 +59,45 @@ Namespace My.Resources
                 resourceCulture = value
             End Set
         End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
+        '''</summary>
+        Friend ReadOnly Property Arrow_Down() As System.Drawing.Icon
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Arrow_Down", resourceCulture)
+                Return CType(obj,System.Drawing.Icon)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
+        '''</summary>
+        Friend ReadOnly Property Help_and_Support() As System.Drawing.Icon
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Help_and_Support", resourceCulture)
+                Return CType(obj,System.Drawing.Icon)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
+        '''</summary>
+        Friend ReadOnly Property Synchonize() As System.Drawing.Icon
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Synchonize", resourceCulture)
+                Return CType(obj,System.Drawing.Icon)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Icon, аналогичного (Значок).
+        '''</summary>
+        Friend ReadOnly Property Warning() As System.Drawing.Icon
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Warning", resourceCulture)
+                Return CType(obj,System.Drawing.Icon)
+            End Get
+        End Property
     End Module
 End Namespace

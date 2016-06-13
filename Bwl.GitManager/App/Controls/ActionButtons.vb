@@ -38,6 +38,7 @@
     Public Sub SetRepNode(repNode As GitPathNode)
         CleanActionButtons()
         If repNode IsNot Nothing Then
+            repNode.UpdateStatus(False, False)
             If repNode.Status.IsRepository Then
                 'create buttons
                 CreateActionButton("Explorer", repNode.FullPath, "explorer", ".", False)

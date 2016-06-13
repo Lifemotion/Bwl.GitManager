@@ -85,27 +85,39 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Gui\ActionButtons.Designer.vb">
+    <Compile Include="App\Controls\ActionButtons.Designer.vb">
       <DependentUpon>ActionButtons.vb</DependentUpon>
     </Compile>
-    <Compile Include="Gui\ActionButtons.vb">
+    <Compile Include="App\Controls\ActionButtons.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Gui\GitManager.vb" />
+    <Compile Include="App\Controls\Committer.Designer.vb">
+      <DependentUpon>Committer.vb</DependentUpon>
+    </Compile>
+    <Compile Include="App\Controls\Committer.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="App\GitManager.vb" />
     <Compile Include="Git\GitPathNode.vb" />
     <Compile Include="Git\GitRepositoryStatus.vb" />
     <Compile Include="Git\GitTool.vb" />
-    <Compile Include="Gui\GitManagerForm.vb">
+    <Compile Include="App\GitManagerForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Gui\GitManagerForm.Designer.vb">
+    <Compile Include="App\GitManagerForm.Designer.vb">
       <DependentUpon>GitManagerForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Gui\RepositoryTree.Designer.vb">
+    <Compile Include="App\Controls\RepositoryTree.Designer.vb">
       <DependentUpon>RepositoryTree.vb</DependentUpon>
     </Compile>
-    <Compile Include="Gui\RepositoryTree.vb">
+    <Compile Include="App\Controls\RepositoryTree.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="App\Controls\RepositoryTreeWithActions.Designer.vb">
+      <DependentUpon>RepositoryTreeWithActions.vb</DependentUpon>
+    </Compile>
+    <Compile Include="App\Controls\RepositoryTreeWithActions.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -127,11 +139,17 @@
     <Compile Include="Utils\SourceTreeExport.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Gui\ActionButtons.resx">
+    <EmbeddedResource Include="App\Controls\ActionButtons.resx">
       <DependentUpon>ActionButtons.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Gui\RepositoryTree.resx">
+    <EmbeddedResource Include="App\Controls\Committer.resx">
+      <DependentUpon>Committer.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App\Controls\RepositoryTree.resx">
       <DependentUpon>RepositoryTree.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App\Controls\RepositoryTreeWithActions.resx">
+      <DependentUpon>RepositoryTreeWithActions.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -139,7 +157,7 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Gui\GitManagerForm.resx">
+    <EmbeddedResource Include="App\GitManagerForm.resx">
       <DependentUpon>GitManagerForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -156,6 +174,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Download Database.ico" />
+    <None Include="Resources\Synchonize.ico" />
+    <None Include="Resources\Help and Support.ico" />
+    <None Include="Resources\Arrow Down.ico" />
+    <None Include="Resources\Warning.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

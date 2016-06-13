@@ -27,24 +27,20 @@ Partial Class GitManagerForm
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(GitManagerForm))
         Me.tbStatus = New System.Windows.Forms.TextBox()
-        Me.NotifyIconGood = New System.Windows.Forms.NotifyIcon(Me.components)
-        Me.NotifyIconWarning = New System.Windows.Forms.NotifyIcon(Me.components)
-        Me.tbCommitMessage = New System.Windows.Forms.TextBox()
-        Me.bCommit = New System.Windows.Forms.Button()
+        Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.DatagridLogWriter1 = New Bwl.Framework.DatagridLogWriter()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.РепозиторийToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuRefresh = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
         Me.menuExit = New System.Windows.Forms.ToolStripMenuItem()
         Me.ИнструментыToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuRescanPaths = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuSettings = New System.Windows.Forms.ToolStripMenuItem()
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.lStatus = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.pbProgress = New System.Windows.Forms.ToolStripProgressBar()
+        Me.Committer1 = New Bwl.GitManager.Committer()
+        Me.RepositoryTree1 = New Bwl.GitManager.RepositoryTreeWithActions()
         Me.ActionButtons1 = New Bwl.GitManager.ActionButtons()
-        Me.RepositoryTree1 = New Bwl.GitManager.RepositoryTree()
         Me.MenuStrip1.SuspendLayout()
-        Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'tbStatus
@@ -52,45 +48,18 @@ Partial Class GitManagerForm
         Me.tbStatus.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbStatus.Location = New System.Drawing.Point(273, 27)
+        Me.tbStatus.Font = New System.Drawing.Font("Lucida Console", 6.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
+        Me.tbStatus.Location = New System.Drawing.Point(273, 26)
         Me.tbStatus.Multiline = True
         Me.tbStatus.Name = "tbStatus"
-        Me.tbStatus.Size = New System.Drawing.Size(282, 347)
+        Me.tbStatus.Size = New System.Drawing.Size(364, 347)
         Me.tbStatus.TabIndex = 4
         '
-        'NotifyIconGood
+        'NotifyIcon
         '
-        Me.NotifyIconGood.Icon = CType(resources.GetObject("NotifyIconGood.Icon"), System.Drawing.Icon)
-        Me.NotifyIconGood.Text = "Bwl Git Manager"
-        Me.NotifyIconGood.Visible = True
-        '
-        'NotifyIconWarning
-        '
-        Me.NotifyIconWarning.Icon = CType(resources.GetObject("NotifyIconWarning.Icon"), System.Drawing.Icon)
-        Me.NotifyIconWarning.Text = "Bwl Git Manager"
-        '
-        'tbCommitMessage
-        '
-        Me.tbCommitMessage.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbCommitMessage.Enabled = False
-        Me.tbCommitMessage.Location = New System.Drawing.Point(273, 380)
-        Me.tbCommitMessage.Multiline = True
-        Me.tbCommitMessage.Name = "tbCommitMessage"
-        Me.tbCommitMessage.Size = New System.Drawing.Size(282, 49)
-        Me.tbCommitMessage.TabIndex = 7
-        '
-        'bCommit
-        '
-        Me.bCommit.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bCommit.Enabled = False
-        Me.bCommit.Location = New System.Drawing.Point(273, 435)
-        Me.bCommit.Name = "bCommit"
-        Me.bCommit.Size = New System.Drawing.Size(282, 23)
-        Me.bCommit.TabIndex = 8
-        Me.bCommit.Text = "Зафиксировать и отправить"
-        Me.bCommit.UseVisualStyleBackColor = True
+        Me.NotifyIcon.Icon = CType(resources.GetObject("NotifyIcon.Icon"), System.Drawing.Icon)
+        Me.NotifyIcon.Text = "Bwl Git Manager"
+        Me.NotifyIcon.Visible = True
         '
         'DatagridLogWriter1
         '
@@ -107,7 +76,7 @@ Partial Class GitManagerForm
         Me.DatagridLogWriter1.ShowInformation = True
         Me.DatagridLogWriter1.ShowMessages = True
         Me.DatagridLogWriter1.ShowWarnings = True
-        Me.DatagridLogWriter1.Size = New System.Drawing.Size(711, 172)
+        Me.DatagridLogWriter1.Size = New System.Drawing.Size(793, 190)
         Me.DatagridLogWriter1.TabIndex = 9
         '
         'MenuStrip1
@@ -115,21 +84,33 @@ Partial Class GitManagerForm
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.РепозиторийToolStripMenuItem, Me.ИнструментыToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(713, 24)
+        Me.MenuStrip1.Size = New System.Drawing.Size(795, 24)
         Me.MenuStrip1.TabIndex = 10
         Me.MenuStrip1.Text = "MenuStrip1"
         '
         'РепозиторийToolStripMenuItem
         '
-        Me.РепозиторийToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuExit})
+        Me.РепозиторийToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuRefresh, Me.ToolStripMenuItem1, Me.menuExit})
         Me.РепозиторийToolStripMenuItem.Name = "РепозиторийToolStripMenuItem"
         Me.РепозиторийToolStripMenuItem.Size = New System.Drawing.Size(91, 20)
         Me.РепозиторийToolStripMenuItem.Text = "Репозиторий"
         '
+        'menuRefresh
+        '
+        Me.menuRefresh.Name = "menuRefresh"
+        Me.menuRefresh.ShortcutKeys = System.Windows.Forms.Keys.F5
+        Me.menuRefresh.Size = New System.Drawing.Size(147, 22)
+        Me.menuRefresh.Text = "Обновить"
+        '
+        'ToolStripMenuItem1
+        '
+        Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(144, 6)
+        '
         'menuExit
         '
         Me.menuExit.Name = "menuExit"
-        Me.menuExit.Size = New System.Drawing.Size(108, 22)
+        Me.menuExit.Size = New System.Drawing.Size(147, 22)
         Me.menuExit.Text = "Выход"
         '
         'ИнструментыToolStripMenuItem
@@ -151,56 +132,42 @@ Partial Class GitManagerForm
         Me.menuSettings.Size = New System.Drawing.Size(199, 22)
         Me.menuSettings.Text = "Настройки..."
         '
-        'StatusStrip1
+        'Committer1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lStatus, Me.pbProgress})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 631)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(713, 22)
-        Me.StatusStrip1.TabIndex = 12
-        Me.StatusStrip1.Text = "StatusStrip1"
-        '
-        'lStatus
-        '
-        Me.lStatus.Name = "lStatus"
-        Me.lStatus.Size = New System.Drawing.Size(73, 17)
-        Me.lStatus.Text = "Ожидание..."
-        '
-        'pbProgress
-        '
-        Me.pbProgress.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
-        Me.pbProgress.AutoSize = False
-        Me.pbProgress.Name = "pbProgress"
-        Me.pbProgress.Size = New System.Drawing.Size(300, 16)
-        '
-        'ActionButtons1
-        '
-        Me.ActionButtons1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.Committer1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ActionButtons1.Location = New System.Drawing.Point(561, 26)
-        Me.ActionButtons1.Name = "ActionButtons1"
-        Me.ActionButtons1.Size = New System.Drawing.Size(148, 431)
-        Me.ActionButtons1.TabIndex = 11
+        Me.Committer1.ConnectedRepositoryTree = Me.RepositoryTree1
+        Me.Committer1.Location = New System.Drawing.Point(273, 380)
+        Me.Committer1.Name = "Committer1"
+        Me.Committer1.Size = New System.Drawing.Size(364, 78)
+        Me.Committer1.TabIndex = 14
         '
         'RepositoryTree1
         '
         Me.RepositoryTree1.Location = New System.Drawing.Point(1, 26)
         Me.RepositoryTree1.Name = "RepositoryTree1"
-        Me.RepositoryTree1.Size = New System.Drawing.Size(266, 430)
+        Me.RepositoryTree1.Size = New System.Drawing.Size(266, 432)
         Me.RepositoryTree1.TabIndex = 13
+        '
+        'ActionButtons1
+        '
+        Me.ActionButtons1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ActionButtons1.Location = New System.Drawing.Point(641, 25)
+        Me.ActionButtons1.Name = "ActionButtons1"
+        Me.ActionButtons1.Size = New System.Drawing.Size(151, 431)
+        Me.ActionButtons1.TabIndex = 11
         '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(713, 653)
+        Me.ClientSize = New System.Drawing.Size(795, 653)
+        Me.Controls.Add(Me.Committer1)
         Me.Controls.Add(Me.RepositoryTree1)
-        Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.ActionButtons1)
         Me.Controls.Add(Me.MenuStrip1)
         Me.Controls.Add(Me.DatagridLogWriter1)
-        Me.Controls.Add(Me.bCommit)
-        Me.Controls.Add(Me.tbCommitMessage)
         Me.Controls.Add(Me.tbStatus)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.MenuStrip1
@@ -208,27 +175,22 @@ Partial Class GitManagerForm
         Me.Text = "Bwl Git Repository Manager"
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
     Friend WithEvents tbStatus As TextBox
-    Friend WithEvents NotifyIconGood As NotifyIcon
-    Friend WithEvents NotifyIconWarning As NotifyIcon
-    Friend WithEvents tbCommitMessage As TextBox
-    Friend WithEvents bCommit As Button
+    Friend WithEvents NotifyIcon As NotifyIcon
     Friend WithEvents DatagridLogWriter1 As DatagridLogWriter
     Friend WithEvents MenuStrip1 As MenuStrip
     Friend WithEvents РепозиторийToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ИнструментыToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents menuRescanPaths As ToolStripMenuItem
     Friend WithEvents ActionButtons1 As ActionButtons
-    Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents lStatus As ToolStripStatusLabel
-    Friend WithEvents pbProgress As ToolStripProgressBar
     Friend WithEvents menuExit As ToolStripMenuItem
     Friend WithEvents menuSettings As ToolStripMenuItem
-    Friend WithEvents RepositoryTree1 As RepositoryTree
+    Friend WithEvents RepositoryTree1 As RepositoryTreeWithActions
+    Friend WithEvents Committer1 As Committer
+    Friend WithEvents menuRefresh As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem1 As ToolStripSeparator
 End Class
