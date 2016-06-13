@@ -1,5 +1,5 @@
 ﻿Public Class GitTool
-    Public Shared Property ConsoleEncoding = Text.Encoding.GetEncoding(866)
+    Public Shared Property ConsoleEncoding = Text.Encoding.UTF8
 
     Private Shared _toolPath As String
 
@@ -79,7 +79,7 @@
     Public Shared Function GetRepositoryStatus(repository As String) As GitRepositoryStatus
         Dim status As New GitRepositoryStatus
         If IO.Directory.Exists(repository) Then
-            Dim result = Execute(repository, " -c advice.statusHints=false status").ToLower.Replace(vbLf, vbCrLf)
+            Dim result = Execute(repository, " -c advice.statusHints=false -c core.quotepath=false status").ToLower.Replace(vbLf, vbCrLf)
             status.RawStatusText = result
             If result.Contains("not a git repository") Then
                 status.IsRepository = False

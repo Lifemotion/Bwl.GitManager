@@ -57,6 +57,7 @@ Public Class RepositoryTree
             Next
         Next
         root.Expand()
+        RaiseEvent TreeRefreshed()
     End Sub
 
     Public Sub RefreshNodeState(node As TreeNode)

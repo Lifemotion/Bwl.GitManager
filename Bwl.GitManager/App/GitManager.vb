@@ -11,8 +11,8 @@ Public Class GitManager
         Public Shared ReadOnly Property Command3Setting As New StringSetting(_storage, "Command3", "")
         Public Shared ReadOnly Property Command4Setting As New StringSetting(_storage, "Command4", "")
         Public Shared ReadOnly Property Command5Setting As New StringSetting(_storage, "Command5", "")
-        Public Shared ReadOnly Property AutoFetchEveryMinutes As New IntegerSetting(_storage, "AutoFetchEveryMinutes", 0)
-        Public Shared ReadOnly Property AutoUpdateLocalEveryMinutes As New IntegerSetting(_storage, "AutoStatusEveryMinutes", 0)
+        Public Shared ReadOnly Property AutoFetchEveryMinutes As New IntegerSetting(_storage, "AutoFetchEveryMinutes", 15)
+        Public Shared ReadOnly Property AutoUpdateLocalEveryMinutes As New IntegerSetting(_storage, "AutoStatusEveryMinutes", 3)
         Public Shared ReadOnly Property ShowCommandsAsButtons As New BooleanSetting(_storage, "ShowCommandsAsButtons", False)
         Public Shared ReadOnly Property LastRepCount As New IntegerSetting(_storage, "LastRepositoryCount", 0)
     End Class
