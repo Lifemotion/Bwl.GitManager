@@ -85,15 +85,28 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gui\ActionButtons.Designer.vb">
+      <DependentUpon>ActionButtons.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\ActionButtons.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Gui\GitManager.vb" />
     <Compile Include="Git\GitPathNode.vb" />
     <Compile Include="Git\GitRepositoryStatus.vb" />
     <Compile Include="Git\GitTool.vb" />
-    <Compile Include="GitManagerForm.vb">
+    <Compile Include="Gui\GitManagerForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GitManagerForm.Designer.vb">
+    <Compile Include="Gui\GitManagerForm.Designer.vb">
       <DependentUpon>GitManagerForm.vb</DependentUpon>
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\RepositoryTree.Designer.vb">
+      <DependentUpon>RepositoryTree.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\RepositoryTree.vb">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -110,16 +123,23 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="SourceTreeExport.vb" />
+    <Compile Include="Utils\ShellExecute.vb" />
+    <Compile Include="Utils\SourceTreeExport.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Gui\ActionButtons.resx">
+      <DependentUpon>ActionButtons.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\RepositoryTree.resx">
+      <DependentUpon>RepositoryTree.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="GitManagerForm.resx">
+    <EmbeddedResource Include="Gui\GitManagerForm.resx">
       <DependentUpon>GitManagerForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
