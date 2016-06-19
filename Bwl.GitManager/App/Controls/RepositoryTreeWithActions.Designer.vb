@@ -34,14 +34,15 @@ Partial Public Class RepositoryTreeWithActions
         Me.menuCommand5 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem2 = New System.Windows.Forms.ToolStripSeparator()
         Me.menuExportSourcetree = New System.Windows.Forms.ToolStripMenuItem()
+        Me.bCloneNewRepo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.menuPullChanged, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3, Me.menuCommand4, Me.menuCommand5, Me.ToolStripMenuItem2, Me.menuExportSourcetree})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.menuPullChanged, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3, Me.menuCommand4, Me.menuCommand5, Me.ToolStripMenuItem2, Me.menuExportSourcetree, Me.bCloneNewRepo})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(335, 302)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(335, 324)
         '
         'menuUpdateLocal
         '
@@ -125,6 +126,12 @@ Partial Public Class RepositoryTreeWithActions
         Me.menuExportSourcetree.Size = New System.Drawing.Size(334, 22)
         Me.menuExportSourcetree.Text = "Экспортировать в SourceTree"
         '
+        'bCloneNewRepo
+        '
+        Me.bCloneNewRepo.Name = "bCloneNewRepo"
+        Me.bCloneNewRepo.Size = New System.Drawing.Size(334, 22)
+        Me.bCloneNewRepo.Text = "Клонировать новый репозиторий сюда"
+        '
         'RepositoryTreeWithActions
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -133,8 +140,8 @@ Partial Public Class RepositoryTreeWithActions
         Me.ResumeLayout(False)
 
     End Sub
-	
-	Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
+
+    Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
     Private components As System.ComponentModel.IContainer
     Friend WithEvents menuUpdateLocal As ToolStripMenuItem
     Friend WithEvents menuFetch As ToolStripMenuItem
@@ -150,4 +157,5 @@ Partial Public Class RepositoryTreeWithActions
     Friend WithEvents menuCommand5 As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem2 As ToolStripSeparator
     Friend WithEvents menuExportSourcetree As ToolStripMenuItem
+    Friend WithEvents bCloneNewRepo As ToolStripMenuItem
 End Class

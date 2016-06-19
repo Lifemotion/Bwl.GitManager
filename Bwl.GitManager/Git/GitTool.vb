@@ -76,6 +76,17 @@
         Return result
     End Function
 
+    Public Shared Function RepositoryClone(folder As String, url As String) As String
+        If Not IO.Directory.Exists(folder) Then Return "directory not exists"
+        Dim cmd = "clone " + url
+        Dim result = Execute(folder, cmd).Replace(vbLf, vbCrLf)
+        If result.ToLower.Contains("cloning into") Then
+            Return result
+        Else
+            Throw New Exception("Ошибка клонирования: " + result)
+        End If
+    End Function
+
     Public Shared Function GetRepositoryStatus(repository As String) As GitRepositoryStatus
         Dim status As New GitRepositoryStatus
         If IO.Directory.Exists(repository) Then

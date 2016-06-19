@@ -105,6 +105,35 @@
         If SelectedRepNode IsNot Nothing Then ShellExecute.Execute(parts(1), SelectedRepNode.FullPath, parts(2))
     End Sub
 
+    Private Sub bCloneNewRepo_Click(sender As Object, e As EventArgs) Handles bCloneNewRepo.Click
+        If SelectedRepNode IsNot Nothing Then
+            If SelectedRepNode.Status.IsRepository Then
+                MsgBox("Нельзя клонировать репозиторий внутрь уже существующего. Выберите папку, не являющуюся репозиторием.", MsgBoxStyle.Exclamation)
+            Else
+                If IO.Directory.Exists(SelectedRepNode.FullPath) = False Then
+                    MsgBox("Данная папка не существует, выберите другую.", MsgBoxStyle.Exclamation)
+                Else
+                    Dim url = InputBox("URL:")
+                    If url > "" Then
+                        If url.Contains("github.com") Then
+                        End If
+                        If url.Substring(url.Length - 4).ToLower <> ".git" Then url += ".git"
+                        _logger.AddMessage("Начало клонирования...")
+                        Try
+                            Dim result = GitTool.RepositoryClone(SelectedRepNode.FullPath, url)
+                            _logger.AddMessage("Клонирование завершено! " + vbCrLf + vbCrLf + result)
+                            If MsgBox("Клонирование завершено. Выполнить обновление дерева репозиториев? ", MsgBoxStyle.YesNo) = vbYes Then
+                                RescanRepositoryPaths()
+                            End If
+                        Catch ex As Exception
+                            MsgBox(ex.Message, MsgBoxStyle.Critical)
+                        End Try
+                    End If
+                End If
+            End If
+        End If
+    End Sub
+
     Private Sub menuExportSourcetree_Click(sender As Object, e As EventArgs) Handles menuExportSourcetree.Click
         Try
             SourceTreeExport.Export(_repTree)
@@ -153,5 +182,6 @@
         autoStatusThread.IsBackground = True
         autoStatusThread.Start()
     End Sub
+
 
 End Class
