@@ -1,6 +1,7 @@
 ﻿Public Class RepositoryTreeWithActions
     Inherits RepositoryTree
-    Private _progressThread As Threading.Thread
+    Private _userProgressThread As Threading.Thread
+    Private _backgroundProgressThread As Threading.Thread
 
     Private Sub SetCustomCommand(command As String, menu As ToolStripMenuItem)
         Dim parts = command.Split({"|"}, StringSplitOptions.None)
@@ -35,25 +36,44 @@
         SetStatus("", Nothing, GitManager.Settings.LastRepCount.Value, -1)
     End Sub
 
-    Private Sub StartInThread(tree As GitPathNode, operationText As String, operatioMaximum As Integer, actionDelegate As Threading.ThreadStart, noError As Boolean)
-        If _progressThread IsNot Nothing Then
+    Private Sub StartInThreadUser(tree As GitPathNode, operationText As String, operatioMaximum As Integer, actionDelegate As Threading.ThreadStart, noError As Boolean)
+        If _userProgressThread IsNot Nothing Then
             If Not noError Then MsgBox("Предыдущая операция не завершена", MsgBoxStyle.Exclamation)
         Else
             _repTree.ResetProgress()
             SetStatus(operationText, tree, operatioMaximum, 0)
-            _progressThread = New Threading.Thread(Sub()
-                                                       actionDelegate()
-                                                       _progressThread = Nothing
-                                                       _logger.AddMessage("...завершено")
-                                                       RefreshAllTree()
-                                                       SetStatus("", Nothing, 0, -1)
-                                                   End Sub)
-            _progressThread.Start()
+            _userProgressThread = New Threading.Thread(Sub()
+                                                           actionDelegate()
+                                                           _userProgressThread = Nothing
+                                                           _logger.AddMessage("...завершено")
+                                                           RefreshAllTree()
+                                                           SetStatus("", Nothing, 0, -1)
+                                                       End Sub)
+            _userProgressThread.Start()
+        End If
+    End Sub
+
+    Private Sub StartInThreadBackground(tree As GitPathNode, operationText As String, operatioMaximum As Integer, actionDelegate As Threading.ThreadStart, noError As Boolean)
+        If _backgroundProgressThread Is Nothing And _userProgressThread Is Nothing Then
+            _repTree.ResetProgress()
+            SetStatus(operationText, tree, operatioMaximum, 0)
+            _backgroundProgressThread = New Threading.Thread(Sub()
+                                                                 actionDelegate()
+                                                                 _backgroundProgressThread = Nothing
+                                                                 _logger.AddMessage("...завершено")
+                                                                 RefreshAllTree()
+                                                                 SetStatus("", Nothing, 0, -1)
+                                                             End Sub)
+            _backgroundProgressThread.Start()
         End If
     End Sub
 
     Public Sub UpdateTree(tree As GitPathNode, noError As Boolean)
-        StartInThread(tree, "Обновление (status)", tree.GetChildCount(True), Sub() tree.UpdateStatus(True, False), noError)
+        StartInThreadUser(tree, "Обновление (status)", tree.GetChildCount(True), Sub() tree.UpdateStatus(True, False), noError)
+    End Sub
+
+    Public Sub UpdateTreeBackground(tree As GitPathNode, noError As Boolean)
+        StartInThreadBackground(tree, "Фоновое обновление (status)", tree.GetChildCount(True), Sub() tree.UpdateStatus(True, False), noError)
     End Sub
 
     Public Sub UpdateSelected()
@@ -61,7 +81,11 @@
     End Sub
 
     Public Sub FetchTree(tree As GitPathNode, noError As Boolean)
-        StartInThread(tree, "Обновление (fetch)", tree.GetChildCount(True), Sub() tree.UpdateFetch(True, False), noError)
+        StartInThreadUser(tree, "Обновление (fetch)", tree.GetChildCount(True), Sub() tree.UpdateFetch(True, False), noError)
+    End Sub
+
+    Public Sub FetchTreeBackground(tree As GitPathNode, noError As Boolean)
+        StartInThreadBackground(tree, "Фоновое обновление (fetch)", tree.GetChildCount(True), Sub() tree.UpdateFetch(True, False), noError)
     End Sub
 
     Public Sub FetchSelected()
@@ -69,7 +93,7 @@
     End Sub
 
     Public Sub PullTree(tree As GitPathNode, onlyChanged As Boolean, noError As Boolean)
-        StartInThread(tree, "Актуализация (pull)", tree.GetChildCount(True), Sub() tree.UpdatePull(True, onlyChanged), noError)
+        StartInThreadUser(tree, "Актуализация (pull)", tree.GetChildCount(True), Sub() tree.UpdatePull(True, onlyChanged), noError)
     End Sub
 
     Public Sub PullSelected(onlyChanged As Boolean)
@@ -158,7 +182,7 @@
                                                             If GitManager.Settings.AutoFetchEveryMinutes.Value > 0 Then
                                                                 Threading.Thread.Sleep(1000 * 60 * GitManager.Settings.AutoFetchEveryMinutes.Value)
                                                                 Try
-                                                                    FetchTree(_repTree, True)
+                                                                    FetchTreeBackground(_repTree, True)
                                                                 Catch ex As Exception
                                                                 End Try
                                                             End If
@@ -173,7 +197,7 @@
                                                              If GitManager.Settings.AutoUpdateLocalEveryMinutes.Value > 0 Then
                                                                  Threading.Thread.Sleep(1000 * 60 * GitManager.Settings.AutoUpdateLocalEveryMinutes.Value)
                                                                  Try
-                                                                     UpdateTree(_repTree, True)
+                                                                     UpdateTreeBackground(_repTree, True)
                                                                  Catch ex As Exception
                                                                  End Try
                                                              End If
