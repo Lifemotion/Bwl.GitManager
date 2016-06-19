@@ -52,7 +52,7 @@ Partial Class GitManagerForm
         Me.tbStatus.Location = New System.Drawing.Point(273, 26)
         Me.tbStatus.Multiline = True
         Me.tbStatus.Name = "tbStatus"
-        Me.tbStatus.Size = New System.Drawing.Size(364, 347)
+        Me.tbStatus.Size = New System.Drawing.Size(364, 340)
         Me.tbStatus.TabIndex = 4
         '
         'NotifyIcon
@@ -67,7 +67,7 @@ Partial Class GitManagerForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DatagridLogWriter1.ExtendedView = False
         Me.DatagridLogWriter1.FilterText = ""
-        Me.DatagridLogWriter1.Location = New System.Drawing.Point(1, 461)
+        Me.DatagridLogWriter1.Location = New System.Drawing.Point(1, 454)
         Me.DatagridLogWriter1.LogEnabled = True
         Me.DatagridLogWriter1.Margin = New System.Windows.Forms.Padding(0)
         Me.DatagridLogWriter1.Name = "DatagridLogWriter1"
@@ -137,16 +137,18 @@ Partial Class GitManagerForm
         Me.Committer1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Committer1.ConnectedRepositoryTree = Me.RepositoryTree1
-        Me.Committer1.Location = New System.Drawing.Point(273, 380)
+        Me.Committer1.Location = New System.Drawing.Point(273, 373)
         Me.Committer1.Name = "Committer1"
         Me.Committer1.Size = New System.Drawing.Size(364, 78)
         Me.Committer1.TabIndex = 14
         '
         'RepositoryTree1
         '
+        Me.RepositoryTree1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.RepositoryTree1.Location = New System.Drawing.Point(1, 26)
         Me.RepositoryTree1.Name = "RepositoryTree1"
-        Me.RepositoryTree1.Size = New System.Drawing.Size(266, 432)
+        Me.RepositoryTree1.Size = New System.Drawing.Size(266, 425)
         Me.RepositoryTree1.TabIndex = 13
         '
         'ActionButtons1
@@ -155,14 +157,14 @@ Partial Class GitManagerForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ActionButtons1.Location = New System.Drawing.Point(641, 25)
         Me.ActionButtons1.Name = "ActionButtons1"
-        Me.ActionButtons1.Size = New System.Drawing.Size(151, 431)
+        Me.ActionButtons1.Size = New System.Drawing.Size(151, 424)
         Me.ActionButtons1.TabIndex = 11
         '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(795, 653)
+        Me.ClientSize = New System.Drawing.Size(795, 646)
         Me.Controls.Add(Me.Committer1)
         Me.Controls.Add(Me.RepositoryTree1)
         Me.Controls.Add(Me.ActionButtons1)
