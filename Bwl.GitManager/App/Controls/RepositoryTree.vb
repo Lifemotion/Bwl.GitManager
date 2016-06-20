@@ -77,8 +77,10 @@ Public Class RepositoryTree
             If parentIndex > -1 Then
                 Dim pn = node.Parent
                 Do While pn IsNot Nothing
-                    pn.ImageIndex = parentIndex
-                    pn.SelectedImageIndex = parentIndex
+                    If pn.ImageIndex < parentIndex Then
+                        pn.ImageIndex = parentIndex
+                        pn.SelectedImageIndex = parentIndex
+                    End If
                     pn = pn.Parent
                 Loop
             End If
