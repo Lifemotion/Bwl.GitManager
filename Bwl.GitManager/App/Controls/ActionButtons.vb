@@ -65,6 +65,16 @@
                     Dim info As New IO.FileInfo(file)
                     CreateActionButton(info.Name, repNode.FullPath, file, "", False)
                 Next
+
+                For Each file In IO.Directory.GetFiles(repNode.FullPath, "*.dch")
+                    Dim info As New IO.FileInfo(file)
+                    CreateActionButton(info.Name, repNode.FullPath, file, "", False)
+                Next
+
+                For Each file In IO.Directory.GetFiles(repNode.FullPath, "*.dip")
+                    Dim info As New IO.FileInfo(file)
+                    CreateActionButton(info.Name, repNode.FullPath, file, "", False)
+                Next
             Else
                 CreateActionButton("Explorer", repNode.FullPath, "explorer", ".", False)
             End If

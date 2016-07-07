@@ -52,7 +52,7 @@ Partial Class GitManagerForm
         Me.tbStatus.Location = New System.Drawing.Point(273, 26)
         Me.tbStatus.Multiline = True
         Me.tbStatus.Name = "tbStatus"
-        Me.tbStatus.Size = New System.Drawing.Size(573, 340)
+        Me.tbStatus.Size = New System.Drawing.Size(497, 340)
         Me.tbStatus.TabIndex = 4
         '
         'NotifyIcon
@@ -139,7 +139,7 @@ Partial Class GitManagerForm
         Me.Committer1.ConnectedRepositoryTree = Me.RepositoryTree1
         Me.Committer1.Location = New System.Drawing.Point(273, 373)
         Me.Committer1.Name = "Committer1"
-        Me.Committer1.Size = New System.Drawing.Size(573, 78)
+        Me.Committer1.Size = New System.Drawing.Size(497, 78)
         Me.Committer1.TabIndex = 14
         '
         'RepositoryTree1
@@ -155,9 +155,9 @@ Partial Class GitManagerForm
         '
         Me.ActionButtons1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ActionButtons1.Location = New System.Drawing.Point(850, 25)
+        Me.ActionButtons1.Location = New System.Drawing.Point(772, 25)
         Me.ActionButtons1.Name = "ActionButtons1"
-        Me.ActionButtons1.Size = New System.Drawing.Size(151, 424)
+        Me.ActionButtons1.Size = New System.Drawing.Size(229, 424)
         Me.ActionButtons1.TabIndex = 11
         '
         'GitManagerForm
