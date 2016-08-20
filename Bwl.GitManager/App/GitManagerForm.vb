@@ -100,7 +100,7 @@ Public Class GitManagerForm
     Private Sub tbUpdate_Tick(sender As Object, e As EventArgs) Handles tbUpdate.Tick
         bUpdate.Visible = False
         If GitManager.GitManagerRepository IsNot Nothing Then
-            If GitManager.GitManagerRepository.Status.CanPush Then
+            If GitManager.GitManagerRepository.Status.CanPull Then
                 'обновление возможно
                 bUpdate.Visible = True
             End If
