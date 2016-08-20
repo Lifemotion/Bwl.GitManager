@@ -137,7 +137,7 @@ Partial Class GitManagerForm
         'tbUpdate
         '
         Me.tbUpdate.Enabled = True
-        Me.tbUpdate.Interval = 10000
+        Me.tbUpdate.Interval = 3000
         '
         'bUpdate
         '
