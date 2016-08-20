@@ -1,8 +1,10 @@
 ﻿Imports Bwl.Framework
+Imports Microsoft.Win32
 
 Public Class GitManagerForm
     Inherits Form
     Private _logger As Logger = GitManager.App.RootLogger
+    Private _autostartSetting As New BooleanSetting(GitManager.App.RootStorage, "Autostart", False, "Запускать при старте Windows", "")
 
     Public Sub New()
         InitializeComponent()
@@ -51,6 +53,11 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub GitManagerForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If _autostartSetting.Value Then
+            Dim rkey As RegistryKey = Registry.CurrentUser.CreateSubKey("Software\Microsoft\Windows\CurrentVersion\Run")
+            rkey.SetValue("Bwl GitManager", Application.ExecutablePath)
+        End If
+
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
             Me.Hide()
@@ -88,6 +95,24 @@ Public Class GitManagerForm
 
     Private Sub menuRefresh_Click(sender As Object, e As EventArgs) Handles menuRefresh.Click
         RepositoryTree1.UpdateSelected
+    End Sub
+
+    Private Sub tbUpdate_Tick(sender As Object, e As EventArgs) Handles tbUpdate.Tick
+        bUpdate.Visible = False
+        If GitManager.GitManagerRepository IsNot Nothing Then
+            If GitManager.GitManagerRepository.Status.CanPush Then
+                'обновление возможно
+                bUpdate.Visible = True
+            End If
+        End If
+    End Sub
+
+    Private Sub bUpdate_Click(sender As Object, e As EventArgs) Handles bUpdate.Click
+        Try
+            Shell(IO.Path.Combine(GitManager.GitManagerRepository.FullPath, "!!autoupdate.cmd"))
+        Catch ex As Exception
+            MsgBox(ex.Message, vbCritical)
+        End Try
     End Sub
 End Class
 

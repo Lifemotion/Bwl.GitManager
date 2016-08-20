@@ -1,5 +1,5 @@
 ﻿Public Class GitTool
-    Public Shared Property ConsoleEncoding = Text.Encoding.UTF8
+    Public Shared Property ConsoleEncoding = System.Text.Encoding.UTF8
 
     Private Shared _toolPath As String
 
@@ -90,27 +90,28 @@
     Public Shared Function GetRepositoryStatus(repository As String) As GitRepositoryStatus
         Dim status As New GitRepositoryStatus
         If IO.Directory.Exists(repository) Then
+
             Dim result = Execute(repository, " -c advice.statusHints=false -c core.quotepath=false status").ToLower.Replace(vbLf, vbCrLf)
-            status.RawStatusText = result
-            If result.Contains("not a git repository") Then
-                status.IsRepository = False
+                status.RawStatusText = result
+                If result.Contains("not a git repository") Then
+                    status.IsRepository = False
+                Else
+                    status.IsRepository = True
+                    If result.Contains("untracked") Then status.IsUntrackedFiles = True
+                    If result.Contains("modified") Then status.IsModifiedFiles = True
+                    If result.Contains("deleted") Then status.IsDeletedFiles = True
+                    If status.IsUntrackedFiles Then status.IsUncommittedChanges = True
+                    If status.IsModifiedFiles Then status.IsUncommittedChanges = True
+                    If status.IsDeletedFiles Then status.IsUncommittedChanges = True
+
+                    If result.Contains("branch is behind") Then status.CanPull = True
+                    If result.Contains("have diverged") Then status.CanPull = True : status.CanPush = True
+                    If result.Contains("branch is ahead") Then status.CanPush = True
+                    If result.Contains("branch is up-to-date") Then status.UpToDate = True
+
+                End If
             Else
-                status.IsRepository = True
-                If result.Contains("untracked") Then status.IsUntrackedFiles = True
-                If result.Contains("modified") Then status.IsModifiedFiles = True
-                If result.Contains("deleted") Then status.IsDeletedFiles = True
-                If status.IsUntrackedFiles Then status.IsUncommittedChanges = True
-                If status.IsModifiedFiles Then status.IsUncommittedChanges = True
-                If status.IsDeletedFiles Then status.IsUncommittedChanges = True
-
-                If result.Contains("branch is behind") Then status.CanPull = True
-                If result.Contains("have diverged") Then status.CanPull = True : status.CanPush = True
-                If result.Contains("branch is ahead") Then status.CanPush = True
-                If result.Contains("branch is up-to-date") Then status.UpToDate = True
-
-            End If
-        Else
-            status.RawStatusText = "directory not exists"
+                status.RawStatusText = "directory not exists"
         End If
         Return status
     End Function

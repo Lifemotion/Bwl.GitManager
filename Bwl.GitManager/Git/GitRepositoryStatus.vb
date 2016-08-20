@@ -8,4 +8,5 @@
     Public Property CanPush As Boolean
     Public Property UpToDate As Boolean
     Public Property RawStatusText As String = ""
+    Public Property IsSpecialRepository As String = ""
 End Class

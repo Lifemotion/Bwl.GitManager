@@ -3,12 +3,23 @@
 Public Class RepositoryTree
     Protected _repTree As New GitPathNode()
     Protected _logger As Logger = GitManager.App.RootLogger
+    Protected _canPull As Boolean
+    Protected _notCommittedOrPushed As Boolean
 
     Public Event NodeSelected(node As TreeNode, repNode As GitPathNode)
     Public Event TreeRefreshed()
 
     Public ReadOnly Property CanPull As Boolean
+        Get
+            Return _canPull
+        End Get
+    End Property
+
     Public ReadOnly Property NotCommittedOrPushed As Boolean
+        Get
+            Return _notCommittedOrPushed
+        End Get
+    End Property
 
     Public ReadOnly Property SelectedNode As TreeNode
         Get
@@ -35,16 +46,28 @@ Public Class RepositoryTree
                                          End Sub
     End Sub
 
-    Private Sub AddRepNodesRecursive(parentNode As TreeNode, repNode As GitPathNode)
+    Private Function AddRepNodesRecursive(parentNode As TreeNode, repNode As GitPathNode, filter As String) As Boolean
         Dim myNode = parentNode.Nodes.Add(repNode.Name, repNode.Name)
         myNode.Tag = repNode
         RefreshNodeState(myNode)
+        Dim good As Boolean = False
         For Each child In repNode.ChildNodes
-            AddRepNodesRecursive(myNode, child)
+            If AddRepNodesRecursive(myNode, child, filter) Then good = True
         Next
-    End Sub
+        If filter = "" Or repNode.Name.ToLower.Contains(filter.ToLower) Then
+            good = True
+        End If
+        If good = False Then
+            parentNode.Nodes.Remove(myNode)
+        End If
+        Return good
+    End Function
 
     Public Sub RecreateRepositoryTree()
+        RecreateRepositoryTree("")
+    End Sub
+
+    Public Sub RecreateRepositoryTree(filter As String)
         tvRepositories.Nodes.Clear()
         Dim root = tvRepositories.Nodes.Add("(все)")
         root.Tag = _repTree
@@ -53,7 +76,7 @@ Public Class RepositoryTree
             Dim node = root.Nodes.Add(hive.Name)
             node.Tag = hive
             For Each child In hive.ChildNodes
-                AddRepNodesRecursive(node, child)
+                AddRepNodesRecursive(node, child, filter)
             Next
         Next
         root.Expand()
@@ -132,5 +155,35 @@ Public Class RepositoryTree
 
     Private Sub tvRepositories_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tvRepositories.AfterSelect
         RaiseEvent NodeSelected(SelectedNode, SelectedRepNode)
+    End Sub
+
+    Private Sub tbFilter_TextChanged(sender As Object, e As EventArgs) Handles tbFilter.TextChanged
+
+    End Sub
+
+    Private Sub tbFilter_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbFilter.KeyPress
+    End Sub
+
+    Private Sub tbFilter_KeyDown(sender As Object, e As KeyEventArgs) Handles tbFilter.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            Dim filter = tbFilter.Text.Trim
+            RecreateRepositoryTree(filter)
+            If filter > "" Then
+                tvRepositories.ExpandAll()
+                tResetFilter.Stop()
+                tResetFilter.Start()
+            End If
+        End If
+    End Sub
+
+    Private Sub tResetFilter_Tick(sender As Object, e As EventArgs) Handles tResetFilter.Tick
+        tbFilter.Text = ""
+        tResetFilter.Stop()
+        RecreateRepositoryTree()
+    End Sub
+
+    Private Sub tbFilter_GotFocus(sender As Object, e As EventArgs) Handles tbFilter.GotFocus
+        If tbFilter.Text = "<фильтр>" Then tbFilter.Text = ""
     End Sub
 End Class

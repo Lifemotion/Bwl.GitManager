@@ -37,6 +37,8 @@ Partial Class GitManagerForm
         Me.ИнструментыToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuRescanPaths = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuSettings = New System.Windows.Forms.ToolStripMenuItem()
+        Me.tbUpdate = New System.Windows.Forms.Timer(Me.components)
+        Me.bUpdate = New System.Windows.Forms.Button()
         Me.Committer1 = New Bwl.GitManager.Committer()
         Me.RepositoryTree1 = New Bwl.GitManager.RepositoryTreeWithActions()
         Me.ActionButtons1 = New Bwl.GitManager.ActionButtons()
@@ -132,6 +134,23 @@ Partial Class GitManagerForm
         Me.menuSettings.Size = New System.Drawing.Size(199, 22)
         Me.menuSettings.Text = "Настройки..."
         '
+        'tbUpdate
+        '
+        Me.tbUpdate.Enabled = True
+        Me.tbUpdate.Interval = 10000
+        '
+        'bUpdate
+        '
+        Me.bUpdate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bUpdate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
+        Me.bUpdate.Location = New System.Drawing.Point(808, 621)
+        Me.bUpdate.Name = "bUpdate"
+        Me.bUpdate.Size = New System.Drawing.Size(193, 23)
+        Me.bUpdate.TabIndex = 15
+        Me.bUpdate.Text = "Доступно обновление!"
+        Me.bUpdate.UseVisualStyleBackColor = True
+        Me.bUpdate.Visible = False
+        '
         'Committer1
         '
         Me.Committer1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
@@ -165,6 +184,7 @@ Partial Class GitManagerForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1004, 646)
+        Me.Controls.Add(Me.bUpdate)
         Me.Controls.Add(Me.Committer1)
         Me.Controls.Add(Me.RepositoryTree1)
         Me.Controls.Add(Me.ActionButtons1)
@@ -195,4 +215,6 @@ Partial Class GitManagerForm
     Friend WithEvents Committer1 As Committer
     Friend WithEvents menuRefresh As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem1 As ToolStripSeparator
+    Friend WithEvents tbUpdate As Timer
+    Friend WithEvents bUpdate As Button
 End Class
