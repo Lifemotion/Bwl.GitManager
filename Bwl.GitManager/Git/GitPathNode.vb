@@ -84,7 +84,7 @@
         If FullPath <> "#" Then
             GitTool.RepositoryFetch(FullPath)
             _status = GitTool.GetRepositoryStatus(FullPath)
-            If GitManager.Settings.AutoPullAfterFetch.Value = True AndAlso _status.AutoPullSettings > "" Then
+            If _status.CanPull AndAlso GitManager.Settings.AutoPullAfterFetch.Value = True AndAlso _status.AutoPullSettings > "" Then
                 Dim settings = _status.AutoPullSettings.ToLower.Split(",")
                 If settings(0).Trim = "enable" Then
                     Dim allowed = True
@@ -106,7 +106,7 @@
                     End If
                 End If
             End If
-            End If
+        End If
         If recursive Then
             For Each child In ChildNodes
                 child.UpdateFetch(recursive, noProgress)
