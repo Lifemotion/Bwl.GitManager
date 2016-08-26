@@ -9,4 +9,5 @@
     Public Property UpToDate As Boolean
     Public Property RawStatusText As String = ""
     Public Property IsSpecialRepository As String = ""
+    Public Property AutoPullSettings As String = ""
 End Class

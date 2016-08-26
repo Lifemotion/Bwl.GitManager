@@ -90,7 +90,12 @@
     Public Shared Function GetRepositoryStatus(repository As String) As GitRepositoryStatus
         Dim status As New GitRepositoryStatus
         If IO.Directory.Exists(repository) Then
-
+            If IO.File.Exists(IO.Path.Combine(repository, ".autopull")) Then
+                Try
+                    status.AutoPullSettings = IO.File.ReadLines(IO.Path.Combine(repository, ".autopull"), System.Text.Encoding.UTF8)(0)
+                Catch ex As Exception
+                End Try
+            End If
             Dim result = Execute(repository, " -c advice.statusHints=false -c core.quotepath=false status").ToLower.Replace(vbLf, vbCrLf)
                 status.RawStatusText = result
                 If result.Contains("not a git repository") Then

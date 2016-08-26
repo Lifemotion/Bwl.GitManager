@@ -83,8 +83,30 @@
         If Not noProgress Then _progress += 1 : RaiseEvent Progress(_progress, Me)
         If FullPath <> "#" Then
             GitTool.RepositoryFetch(FullPath)
-            _Status = GitTool.GetRepositoryStatus(FullPath)
-        End If
+            _status = GitTool.GetRepositoryStatus(FullPath)
+            If GitManager.Settings.AutoPullAfterFetch.Value = True AndAlso _status.AutoPullSettings > "" Then
+                Dim settings = _status.AutoPullSettings.ToLower.Split(",")
+                If settings(0).Trim = "enable" Then
+                    Dim allowed = True
+                    For i = 1 To settings.Length - 1
+                        Dim prcName = settings(i).ToLower.Substring(1)
+                        For Each prc In ProcessList.Processes.Clone
+                            If prc.ProcessName.ToLower = prcName Then
+                                allowed = False
+                                GitManager.App.RootLogger.AddDebug("AutoPull включен для " + Name + ", но был заблокирован процессом " + prcName)
+                                Exit For
+                            End If
+                        Next
+                    Next
+                    If allowed Then
+                        GitTool.RepositoryPull(FullPath)
+                        GitTool.RepositoryPull(FullPath)
+                        _status = GitTool.GetRepositoryStatus(FullPath)
+                        GitManager.App.RootLogger.AddMessage("AutoPull выполнен для " + Name)
+                    End If
+                End If
+            End If
+            End If
         If recursive Then
             For Each child In ChildNodes
                 child.UpdateFetch(recursive, noProgress)
