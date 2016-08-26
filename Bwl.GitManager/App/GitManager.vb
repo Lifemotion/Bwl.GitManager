@@ -20,7 +20,7 @@ Public Class GitManager
         Public Shared Property Command5Setting As New StringSetting(_storage, "Command5", "")
         Public Shared Property AutoFetchEveryMinutes As New IntegerSetting(_storage, "AutoFetchEveryMinutes", 15)
         Public Shared Property AutoUpdateLocalEveryMinutes As New IntegerSetting(_storage, "AutoStatusEveryMinutes", 3)
-        Public Shared Property AutoPullAfterFetch As New BooleanSetting(_storage, "AutoPullAfterFetch", True)
+        Public Shared Property AutoPullAfterFetch As New BooleanSetting(_storage, "AutoPullAfterFetch", False)
         Public Shared Property ShowCommandsAsButtons As New BooleanSetting(_storage, "ShowCommandsAsButtons", True)
         Public Shared Property LastRepCount As New IntegerSetting(_storage, "LastRepositoryCount", 0)
     End Class

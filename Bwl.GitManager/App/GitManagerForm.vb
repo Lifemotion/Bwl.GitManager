@@ -109,7 +109,11 @@ Public Class GitManagerForm
 
     Private Sub bUpdate_Click(sender As Object, e As EventArgs) Handles bUpdate.Click
         Try
-            Shell(IO.Path.Combine(GitManager.GitManagerRepository.FullPath, "!!autoupdate.cmd"))
+            Dim prc As New Process
+            prc.StartInfo.WorkingDirectory = GitManager.GitManagerRepository.FullPath
+            prc.StartInfo.FileName = "!!autoupdate.cmd"
+            prc.StartInfo.WindowStyle = ProcessWindowStyle.Normal
+            prc.Start()
         Catch ex As Exception
             MsgBox(ex.Message, vbCritical)
         End Try
