@@ -84,12 +84,24 @@
         StartInThreadUser(tree, "Обновление (fetch)", tree.GetChildCount(True), Sub() tree.UpdateFetch(True, False), noError)
     End Sub
 
+    Public Sub ResetTree(tree As GitPathNode, noError As Boolean)
+        StartInThreadUser(tree, "Сброс (reset + clean)", tree.GetChildCount(True), Sub() tree.ResetClean(True, False, True, True, False), noError)
+    End Sub
+
     Public Sub FetchTreeBackground(tree As GitPathNode, noError As Boolean)
         StartInThreadBackground(tree, "Фоновое обновление (fetch)", tree.GetChildCount(True), Sub() tree.UpdateFetch(True, False), noError)
     End Sub
 
     Public Sub FetchSelected()
         If SelectedRepNode IsNot Nothing Then FetchTree(SelectedRepNode, False)
+    End Sub
+
+    Public Sub ResetSelected()
+        If SelectedRepNode IsNot Nothing Then
+            If MsgBox("Это опасная операция! Неотправленные изменения будут потеряны!", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
+                ResetTree(SelectedRepNode, False)
+            End If
+        End If
     End Sub
 
     Public Sub PullTree(tree As GitPathNode, onlyChanged As Boolean, noError As Boolean)
@@ -207,5 +219,7 @@
         autoStatusThread.Start()
     End Sub
 
-
+    Private Sub menuReset_Click(sender As Object, e As EventArgs) Handles menuReset.Click
+        ResetSelected
+    End Sub
 End Class

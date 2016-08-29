@@ -55,6 +55,18 @@
         Return result
     End Function
 
+    Public Shared Function RepositoryReset(repository As String, mode As String) As String
+        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        Dim result = Execute(repository, "reset --" + mode).ToLower
+        Return result
+    End Function
+
+    Public Shared Function RepositoryClean(repository As String, removeIgnoredFiles As Boolean) As String
+        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        Dim result = Execute(repository, "clean -f" + If(removeIgnoredFiles, " -x", "")).ToLower
+        Return result
+    End Function
+
     Public Shared Function RepositoryCommit(repository As String, message As String) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "commit -a -m """ + message + """")

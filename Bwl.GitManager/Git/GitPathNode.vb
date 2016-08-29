@@ -52,6 +52,20 @@
         End If
     End Sub
 
+    Public Sub ResetClean(recursive As Boolean, noProgress As Boolean, needReset As Boolean, needClean As Boolean, needCleanIgnored As Boolean)
+        If Not noProgress Then _progress += 1 : RaiseEvent Progress(_progress, Me)
+        If FullPath <> "#" Then
+            If needReset Then      GitTool.RepositoryReset(FullPath, "hard")
+            If needClean Then       GitTool.RepositoryClean(FullPath, needCleanIgnored)
+                _status = GitTool.GetRepositoryStatus(FullPath)
+            End If
+            If recursive Then
+            For Each child In ChildNodes
+                child.ResetClean(recursive, noProgress, needReset, needClean, needCleanIgnored)
+            Next
+        End If
+    End Sub
+
     Public Function GetChildCount(recursive As Boolean) As Integer
         Dim result = ChildNodes.Count
         If recursive Then
@@ -88,16 +102,23 @@
                 Dim settings = _status.AutoPullSettings.ToLower.Split(",")
                 If settings(0).Trim = "enable" Then
                     Dim allowed = True
-                    For i = 1 To settings.Length - 1
-                        Dim prcName = settings(i).ToLower.Substring(1)
-                        For Each prc In ProcessList.Processes.Clone
-                            If prc.ProcessName.ToLower = prcName Then
-                                allowed = False
-                                GitManager.App.RootLogger.AddDebug("AutoPull включен для " + Name + ", но был заблокирован процессом " + prcName)
-                                Exit For
-                            End If
+                    If _status.IsUncommittedChanges Then
+                        allowed = False
+                        GitManager.App.RootLogger.AddDebug("AutoPull включен для " + Name + ", но был заблокирован неотправленными изменениями")
+                    End If
+                    If allowed Then
+
+                        For i = 1 To settings.Length - 1
+                            Dim prcName = settings(i).ToLower.Substring(1)
+                            For Each prc In ProcessList.Processes.Clone
+                                If prc.ProcessName.ToLower = prcName Then
+                                    allowed = False
+                                    GitManager.App.RootLogger.AddDebug("AutoPull включен для " + Name + ", но был заблокирован процессом " + prcName)
+                                    Exit For
+                                End If
+                            Next
                         Next
-                    Next
+                    End If
                     If allowed Then
                         GitTool.RepositoryPull(FullPath)
                         GitTool.RepositoryPull(FullPath)
