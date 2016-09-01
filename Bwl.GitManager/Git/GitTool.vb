@@ -67,6 +67,19 @@
         Return result
     End Function
 
+    Public Shared Function GetRepositoryRemotes(repository As String) As Dictionary(Of String, String)
+        If Not IO.Directory.Exists(repository) Then Throw New Exception("directory not exists")
+        Dim result = Execute(repository, "remote -v").Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
+        Dim origins As New Dictionary(Of String, String)
+        For Each line In result
+            Dim parts = line.Split({" ",vbTab }, StringSplitOptions.RemoveEmptyEntries)
+            If parts.Length = 3 Then
+                origins.Add(parts(0)+" "+parts(2), parts(1))
+            End If
+        Next
+        Return origins
+    End Function
+
     Public Shared Function RepositoryCommit(repository As String, message As String) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "commit -a -m """ + message + """")

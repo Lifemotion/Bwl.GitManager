@@ -85,6 +85,11 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="App\GitManager.vb" />
+    <Compile Include="GitServers\BitbucketServer.vb" />
+    <Compile Include="GitServers\GithubServer.vb" />
+    <Compile Include="GitServers\GitServers.vb" />
+    <Compile Include="GitServers\IGitServer.vb" />
+    <Compile Include="GitServers\StashServer.vb" />
     <Compile Include="Git\GitPathNode.vb" />
     <Compile Include="Git\GitRepositoryStatus.vb" />
     <Compile Include="Git\GitTool.vb" />

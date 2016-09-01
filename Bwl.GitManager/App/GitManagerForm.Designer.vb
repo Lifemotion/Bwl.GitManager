@@ -42,6 +42,7 @@ Partial Class GitManagerForm
         Me.Committer1 = New Bwl.GitManager.Committer()
         Me.RepositoryTree1 = New Bwl.GitManager.RepositoryTreeWithActions()
         Me.ActionButtons1 = New Bwl.GitManager.ActionButtons()
+        Me.menuExportSourceTree = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -117,7 +118,7 @@ Partial Class GitManagerForm
         '
         'ИнструментыToolStripMenuItem
         '
-        Me.ИнструментыToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuRescanPaths, Me.menuSettings})
+        Me.ИнструментыToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuRescanPaths, Me.menuSettings, Me.menuExportSourceTree})
         Me.ИнструментыToolStripMenuItem.Name = "ИнструментыToolStripMenuItem"
         Me.ИнструментыToolStripMenuItem.Size = New System.Drawing.Size(95, 20)
         Me.ИнструментыToolStripMenuItem.Text = "Инструменты"
@@ -125,13 +126,13 @@ Partial Class GitManagerForm
         'menuRescanPaths
         '
         Me.menuRescanPaths.Name = "menuRescanPaths"
-        Me.menuRescanPaths.Size = New System.Drawing.Size(199, 22)
+        Me.menuRescanPaths.Size = New System.Drawing.Size(308, 22)
         Me.menuRescanPaths.Text = "Пересканировать пути"
         '
         'menuSettings
         '
         Me.menuSettings.Name = "menuSettings"
-        Me.menuSettings.Size = New System.Drawing.Size(199, 22)
+        Me.menuSettings.Size = New System.Drawing.Size(308, 22)
         Me.menuSettings.Text = "Настройки..."
         '
         'tbUpdate
@@ -179,6 +180,12 @@ Partial Class GitManagerForm
         Me.ActionButtons1.Size = New System.Drawing.Size(229, 424)
         Me.ActionButtons1.TabIndex = 11
         '
+        'menuExportSourceTree
+        '
+        Me.menuExportSourceTree.Name = "menuExportSourceTree"
+        Me.menuExportSourceTree.Size = New System.Drawing.Size(308, 22)
+        Me.menuExportSourceTree.Text = "Экспортировать репозитории в SourceTree"
+        '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -217,4 +224,5 @@ Partial Class GitManagerForm
     Friend WithEvents ToolStripMenuItem1 As ToolStripSeparator
     Friend WithEvents tbUpdate As Timer
     Friend WithEvents bUpdate As Button
+    Friend WithEvents menuExportSourceTree As ToolStripMenuItem
 End Class

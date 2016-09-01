@@ -9,6 +9,12 @@ Public Class RepositoryTree
     Public Event NodeSelected(node As TreeNode, repNode As GitPathNode)
     Public Event TreeRefreshed()
 
+    Public ReadOnly Property GitPathNodeRoot As GitPathNode
+        Get
+            Return _repTree
+        End Get
+    End Property
+
     Public ReadOnly Property CanPull As Boolean
         Get
             Return _canPull

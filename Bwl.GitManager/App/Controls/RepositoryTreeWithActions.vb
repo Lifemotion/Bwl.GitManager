@@ -170,13 +170,6 @@
         End If
     End Sub
 
-    Private Sub menuExportSourcetree_Click(sender As Object, e As EventArgs) Handles menuExportSourcetree.Click
-        Try
-            SourceTreeExport.Export(_repTree)
-        Catch ex As Exception
-            MsgBox(ex.Message, vbCritical)
-        End Try
-    End Sub
 
     Private Sub RepositoryTreeWithActions_Load(sender As Object, e As EventArgs) Handles Me.Load
         If DesignMode Then Return
@@ -221,5 +214,20 @@
 
     Private Sub menuReset_Click(sender As Object, e As EventArgs) Handles menuReset.Click
         ResetSelected
+    End Sub
+
+    Private Sub menuOpenWeb_Click(sender As Object, e As EventArgs) Handles menuOpenWeb.Click
+        If SelectedRepNode.Status.IsRepository Then
+            Dim origins = GitTool.GetRepositoryRemotes(SelectedRepNode.FullPath)
+            If origins.Count > 0 Then
+                Dim origin = origins.Values(0)
+                For Each server In GitServers.Providers
+                    If server.OriginSupported(origin) Then
+                        Dim url = server.GetWebUrl(origin)
+                        System.Diagnostics.Process.Start(url)
+                    End If
+                Next
+            End If
+        End If
     End Sub
 End Class

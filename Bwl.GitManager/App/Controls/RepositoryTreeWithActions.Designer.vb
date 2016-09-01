@@ -24,6 +24,7 @@ Partial Public Class RepositoryTreeWithActions
         Me.menuFetch = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuPull = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuPullChanged = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuReset = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
         Me.menuOpenExplorer = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuOpenCmd = New System.Windows.Forms.ToolStripMenuItem()
@@ -33,19 +34,18 @@ Partial Public Class RepositoryTreeWithActions
         Me.menuCommand4 = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuCommand5 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem2 = New System.Windows.Forms.ToolStripSeparator()
-        Me.menuExportSourcetree = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuOpenWeb = New System.Windows.Forms.ToolStripMenuItem()
         Me.bCloneNewRepo = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem3 = New System.Windows.Forms.ToolStripSeparator()
         Me.СоздаитьКопиюToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ТекущегоСостоянияРепозиторияВВидеПапкиToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ТекущегоСостоянияВВидеАрхиваToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.menuReset = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.menuPullChanged, Me.menuReset, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3, Me.menuCommand4, Me.menuCommand5, Me.ToolStripMenuItem2, Me.menuExportSourcetree, Me.bCloneNewRepo, Me.ToolStripMenuItem3, Me.СоздаитьКопиюToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.menuPullChanged, Me.menuReset, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3, Me.menuCommand4, Me.menuCommand5, Me.ToolStripMenuItem2, Me.menuOpenWeb, Me.bCloneNewRepo, Me.ToolStripMenuItem3, Me.СоздаитьКопиюToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip1.Size = New System.Drawing.Size(397, 374)
         '
@@ -72,6 +72,12 @@ Partial Public Class RepositoryTreeWithActions
         Me.menuPullChanged.Name = "menuPullChanged"
         Me.menuPullChanged.Size = New System.Drawing.Size(396, 22)
         Me.menuPullChanged.Text = "Актуализировать с сервера только обновленные (pull)"
+        '
+        'menuReset
+        '
+        Me.menuReset.Name = "menuReset"
+        Me.menuReset.Size = New System.Drawing.Size(396, 22)
+        Me.menuReset.Text = "Сбросить состояние к последнему коммиту (reset + clean)"
         '
         'ToolStripMenuItem1
         '
@@ -125,11 +131,11 @@ Partial Public Class RepositoryTreeWithActions
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
         Me.ToolStripMenuItem2.Size = New System.Drawing.Size(393, 6)
         '
-        'menuExportSourcetree
+        'menuOpenWeb
         '
-        Me.menuExportSourcetree.Name = "menuExportSourcetree"
-        Me.menuExportSourcetree.Size = New System.Drawing.Size(396, 22)
-        Me.menuExportSourcetree.Text = "Экспортировать в SourceTree"
+        Me.menuOpenWeb.Name = "menuOpenWeb"
+        Me.menuOpenWeb.Size = New System.Drawing.Size(396, 22)
+        Me.menuOpenWeb.Text = "Открыть в браузере"
         '
         'bCloneNewRepo
         '
@@ -162,12 +168,6 @@ Partial Public Class RepositoryTreeWithActions
         Me.ТекущегоСостоянияВВидеАрхиваToolStripMenuItem.Size = New System.Drawing.Size(265, 22)
         Me.ТекущегоСостоянияВВидеАрхиваToolStripMenuItem.Text = "Текущего состояния в виде архива"
         '
-        'menuReset
-        '
-        Me.menuReset.Name = "menuReset"
-        Me.menuReset.Size = New System.Drawing.Size(396, 22)
-        Me.menuReset.Text = "Сбросить состояние к последнему коммиту (reset + clean)"
-        '
         'RepositoryTreeWithActions
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -193,7 +193,7 @@ Partial Public Class RepositoryTreeWithActions
     Friend WithEvents menuCommand4 As ToolStripMenuItem
     Friend WithEvents menuCommand5 As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem2 As ToolStripSeparator
-    Friend WithEvents menuExportSourcetree As ToolStripMenuItem
+    Friend WithEvents menuOpenWeb As ToolStripMenuItem
     Friend WithEvents bCloneNewRepo As ToolStripMenuItem
     Friend WithEvents menuReset As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem3 As ToolStripSeparator

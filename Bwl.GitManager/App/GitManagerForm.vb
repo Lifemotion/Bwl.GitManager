@@ -118,5 +118,13 @@ Public Class GitManagerForm
             MsgBox(ex.Message, vbCritical)
         End Try
     End Sub
+
+    Private Sub menuExportSourceTree_Click(sender As Object, e As EventArgs) Handles menuExportSourceTree.Click
+        Try
+            SourceTreeExport.Export(RepositoryTree1.GitPathNodeRoot)
+        Catch ex As Exception
+            MsgBox(ex.Message, vbCritical)
+        End Try
+    End Sub
 End Class
 
