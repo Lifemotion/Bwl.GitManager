@@ -1,5 +1,6 @@
 ﻿Public Class GitTool
     Public Shared Property ConsoleEncoding = System.Text.Encoding.UTF8
+    Public Shared Property Priority As ProcessPriorityClass = ProcessPriorityClass.Idle
 
     Private Shared _toolPath As String
 
@@ -29,6 +30,7 @@
         prc.StartInfo.FileName = _toolPath
         prc.StartInfo.CreateNoWindow = True
         prc.Start()
+        prc.PriorityClass = ProcessPriorityClass.Idle
         Dim resultOutput = ""
         Dim resultErrors = ""
         resultOutput = prc.StandardOutput.ReadToEnd()

@@ -144,6 +144,10 @@
         If IO.File.Exists(IO.Path.Combine(path, "Bwl.GitManager.sln")) And IO.File.Exists(IO.Path.Combine(path, "Bwl.GitManager", "Bwl.GitManager.vbproj")) Then
             GitManager.GitManagerRepository = Me
         End If
+        If IO.Directory.Exists(IO.Path.Combine(path, ".git")) Then
+            Status.IsRepository = True
+            Status.RawStatusText = "(fast scan)"
+        End If
 
         _fullPath = path
         Dim info = New IO.DirectoryInfo(path)
@@ -161,24 +165,24 @@
         Return False
     End Function
 
-    Public Shared Function GetRepositoriesTree(rootPath As String) As GitPathNode
+    Public Shared Function GetRepositoriesTree(rootPath As String, fastScan As Boolean) As GitPathNode
         If IO.Directory.Exists(rootPath) Then
             Dim rep = New GitPathNode(rootPath)
-            rep.UpdateStatus(False, True)
+            If Not fastScan Then  rep.UpdateStatus(False, True)
             If rep.Status.IsRepository Then
-                _progress += 1
-                RaiseEvent Progress(_progress, rep)
-                Return rep
-            Else
-                Dim childs = IO.Directory.GetDirectories(rootPath)
-                For Each child In childs
-                    Dim repChild = GetRepositoriesTree(child)
+                    _progress += 1
+                    RaiseEvent Progress(_progress, rep)
+                    Return rep
+                Else
+                    Dim childs = IO.Directory.GetDirectories(rootPath)
+                    For Each child In childs
+                    Dim repChild = GetRepositoriesTree(child, fastScan)
                     If ContainsRepositories(repChild) Then rep.ChildNodes.Add(repChild)
-                Next
-                Return rep
-            End If
-        Else
-            Return Nothing
+                    Next
+                    Return rep
+                End If
+            Else
+                Return Nothing
         End If
     End Function
 End Class

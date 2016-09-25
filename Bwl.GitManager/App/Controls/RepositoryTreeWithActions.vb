@@ -27,7 +27,7 @@
         For Each path In GitManager.Settings.RepPathSetting.Value.Split({";", ","}, StringSplitOptions.RemoveEmptyEntries)
             path = path.Trim
             _logger.AddInformation(path)
-            Dim tree = GitPathNode.GetRepositoriesTree(path)
+            Dim tree = GitPathNode.GetRepositoriesTree(path, GitManager.Settings.FastScanRepositoryTree)
             If tree IsNot Nothing Then newRepTree.ChildNodes.Add(tree)
         Next
         _logger.AddMessage("Обновление списка репозиториев завершено")
