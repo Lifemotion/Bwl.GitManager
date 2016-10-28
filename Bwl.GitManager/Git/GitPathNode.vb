@@ -122,7 +122,7 @@
                     If allowed Then
 
                         For i = 1 To settings.Length - 1
-                            Dim prcName = settings(i).ToLower.Substring(1)
+                            Dim prcName = settings(i).ToLower.Substring(1).Trim
                             For Each prc In ProcessList.Processes.Clone
                                 If prc.ProcessName.ToLower = prcName Then
                                     allowed = False
