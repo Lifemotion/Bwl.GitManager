@@ -1,15 +1,18 @@
 ﻿Public Class ActionButtons
     Private _actionButtonCount As Integer = 0
 
-    Private Sub CreateActionButton(name As String, repPath As String, cmd As String, args As String, useShell As Boolean)
+    Private Sub CreateActionButton(name As String, repPath As String, cmd As String, args As String, useShell As Boolean, color As Color)
         Dim button As New Button()
         button.Text = name
-        button.Width = pActionButtons.Width - 10
-        button.Height = 30
+        button.Width = pActionButtons.Width - 25
+        button.Height = 25
         pActionButtons.Controls.Add(button)
         button.Left = 5
-        button.Top = (button.Height + 5) * _actionButtonCount
+        button.Top = (button.Height + 3) * _actionButtonCount
         _actionButtonCount += 1
+        If color.R > 0 Or color.G > 0 Or color.B > 0 Then
+            button.BackColor = color
+        End If
         AddHandler button.Click, Sub()
                                      If useShell Then
                                          Shell(cmd, AppWinStyle.NormalFocus)
@@ -26,7 +29,9 @@
     Private Sub CreateActionButtonCommand(command As String, repPath As String)
         Dim parts = command.Split({"|"}, StringSplitOptions.None)
         If parts.Length > 2 Then
-            CreateActionButton(parts(0), repPath, parts(1), parts(2), False)
+            If IO.File.Exists(parts(1)) Then
+                CreateActionButton(parts(0), repPath, parts(1), parts(2), False, Color.White)
+            End If
         End If
     End Sub
 
@@ -41,7 +46,8 @@
             repNode.UpdateStatus(False, False)
             If repNode.Status.IsRepository Then
                 'create buttons
-                CreateActionButton("Explorer", repNode.FullPath, "explorer", ".", False)
+                CreateActionButton("Explorer", repNode.FullPath, "explorer", ".", False, Color.LightGray)
+                Dim gitter = ""
 
                 If GitManager.Settings.ShowCommandsAsButtons.Value Then
                     If GitManager.Settings.Command1Setting.Value > "" Then CreateActionButtonCommand(GitManager.Settings.Command1Setting.Value, repNode.FullPath)
@@ -53,30 +59,30 @@
 
                 For Each file In IO.Directory.GetFiles(repNode.FullPath, "*.cmd")
                     Dim info As New IO.FileInfo(file)
-                    CreateActionButton(info.Name, repNode.FullPath, file, "", False)
+                    CreateActionButton(info.Name, repNode.FullPath, file, "", False, Color.LightYellow)
                 Next
 
                 For Each file In IO.Directory.GetFiles(repNode.FullPath, "*.sln")
                     Dim info As New IO.FileInfo(file)
-                    CreateActionButton(info.Name, repNode.FullPath, file, "", False)
+                    CreateActionButton(info.Name, repNode.FullPath, file, "", False, Color.FromArgb(255, 200, 255))
                 Next
 
                 For Each file In IO.Directory.GetFiles(repNode.FullPath, "*.atsln")
                     Dim info As New IO.FileInfo(file)
-                    CreateActionButton(info.Name, repNode.FullPath, file, "", False)
+                    CreateActionButton(info.Name, repNode.FullPath, file, "", False, Color.Pink)
                 Next
 
-                For Each file In IO.Directory.GetFiles(repNode.FullPath, "*.dch")
+                For Each file In IO.Directory.GetFiles(repNode.FullPath, "*.dch", IO.SearchOption.AllDirectories)
                     Dim info As New IO.FileInfo(file)
-                    CreateActionButton(info.Name, repNode.FullPath, file, "", False)
+                    CreateActionButton(info.Name, repNode.FullPath, file, "", False, Color.Orange)
                 Next
 
-                For Each file In IO.Directory.GetFiles(repNode.FullPath, "*.dip")
+                For Each file In IO.Directory.GetFiles(repNode.FullPath, "*.dip", IO.SearchOption.AllDirectories)
                     Dim info As New IO.FileInfo(file)
-                    CreateActionButton(info.Name, repNode.FullPath, file, "", False)
+                    CreateActionButton(info.Name, repNode.FullPath, file, "", False, Color.LightGreen)
                 Next
             Else
-                CreateActionButton("Explorer", repNode.FullPath, "explorer", ".", False)
+                CreateActionButton("Explorer", repNode.FullPath, "explorer", ".", False, Color.LightGray)
             End If
         End If
     End Sub

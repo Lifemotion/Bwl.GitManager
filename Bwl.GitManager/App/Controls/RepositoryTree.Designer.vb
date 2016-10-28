@@ -29,6 +29,7 @@ Partial Class RepositoryTree
         Me.pbProgress = New System.Windows.Forms.ProgressBar()
         Me.tbFilter = New System.Windows.Forms.TextBox()
         Me.tResetFilter = New System.Windows.Forms.Timer(Me.components)
+        Me.lState = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'tvRepositories
@@ -40,10 +41,10 @@ Partial Class RepositoryTree
         Me.tvRepositories.ImageIndex = 0
         Me.tvRepositories.ImageList = Me.ImageList1
         Me.tvRepositories.ItemHeight = 16
-        Me.tvRepositories.Location = New System.Drawing.Point(0, 23)
+        Me.tvRepositories.Location = New System.Drawing.Point(0, 22)
         Me.tvRepositories.Name = "tvRepositories"
         Me.tvRepositories.SelectedImageIndex = 0
-        Me.tvRepositories.Size = New System.Drawing.Size(284, 368)
+        Me.tvRepositories.Size = New System.Drawing.Size(284, 392)
         Me.tvRepositories.TabIndex = 3
         '
         'ImageList1
@@ -67,10 +68,11 @@ Partial Class RepositoryTree
         'pbProgress
         '
         Me.pbProgress.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.pbProgress.Location = New System.Drawing.Point(0, 395)
+        Me.pbProgress.Location = New System.Drawing.Point(0, 433)
         Me.pbProgress.Name = "pbProgress"
-        Me.pbProgress.Size = New System.Drawing.Size(284, 23)
+        Me.pbProgress.Size = New System.Drawing.Size(284, 10)
         Me.pbProgress.TabIndex = 4
+        Me.pbProgress.Value = 10
         '
         'tbFilter
         '
@@ -86,15 +88,25 @@ Partial Class RepositoryTree
         '
         Me.tResetFilter.Interval = 60000
         '
+        'lState
+        '
+        Me.lState.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lState.Location = New System.Drawing.Point(3, 417)
+        Me.lState.Name = "lState"
+        Me.lState.Size = New System.Drawing.Size(278, 13)
+        Me.lState.TabIndex = 6
+        Me.lState.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        '
         'RepositoryTree
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.Controls.Add(Me.lState)
         Me.Controls.Add(Me.tbFilter)
         Me.Controls.Add(Me.pbProgress)
         Me.Controls.Add(Me.tvRepositories)
         Me.Name = "RepositoryTree"
-        Me.Size = New System.Drawing.Size(284, 418)
+        Me.Size = New System.Drawing.Size(284, 443)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -105,4 +117,5 @@ Partial Class RepositoryTree
     Friend WithEvents pbProgress As ProgressBar
     Friend WithEvents tbFilter As TextBox
     Friend WithEvents tResetFilter As Timer
+    Friend WithEvents lState As Label
 End Class

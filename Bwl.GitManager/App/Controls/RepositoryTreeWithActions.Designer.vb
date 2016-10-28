@@ -40,14 +40,15 @@ Partial Public Class RepositoryTreeWithActions
         Me.СоздаитьКопиюToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ТекущегоСостоянияРепозиторияВВидеПапкиToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ТекущегоСостоянияВВидеАрхиваToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuPush = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.menuPullChanged, Me.menuReset, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3, Me.menuCommand4, Me.menuCommand5, Me.ToolStripMenuItem2, Me.menuOpenWeb, Me.bCloneNewRepo, Me.ToolStripMenuItem3, Me.СоздаитьКопиюToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuUpdateLocal, Me.menuFetch, Me.menuPull, Me.menuPullChanged, Me.menuReset, Me.menuPush, Me.ToolStripMenuItem1, Me.menuOpenExplorer, Me.menuOpenCmd, Me.menuCommand1, Me.menuCommand2, Me.menuCommand3, Me.menuCommand4, Me.menuCommand5, Me.ToolStripMenuItem2, Me.menuOpenWeb, Me.bCloneNewRepo, Me.ToolStripMenuItem3, Me.СоздаитьКопиюToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(397, 374)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(397, 396)
         '
         'menuUpdateLocal
         '
@@ -168,6 +169,12 @@ Partial Public Class RepositoryTreeWithActions
         Me.ТекущегоСостоянияВВидеАрхиваToolStripMenuItem.Size = New System.Drawing.Size(265, 22)
         Me.ТекущегоСостоянияВВидеАрхиваToolStripMenuItem.Text = "Текущего состояния в виде архива"
         '
+        'menuPush
+        '
+        Me.menuPush.Name = "menuPush"
+        Me.menuPush.Size = New System.Drawing.Size(396, 22)
+        Me.menuPush.Text = "Отправить на сервер (push)"
+        '
         'RepositoryTreeWithActions
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -200,4 +207,5 @@ Partial Public Class RepositoryTreeWithActions
     Friend WithEvents СоздаитьКопиюToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ТекущегоСостоянияРепозиторияВВидеПапкиToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ТекущегоСостоянияВВидеАрхиваToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents menuPush As ToolStripMenuItem
 End Class

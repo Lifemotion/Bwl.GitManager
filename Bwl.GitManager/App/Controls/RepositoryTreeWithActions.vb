@@ -26,7 +26,7 @@
         Dim newRepTree As New GitPathNode
         For Each path In GitManager.Settings.RepPathSetting.Value.Split({";", ","}, StringSplitOptions.RemoveEmptyEntries)
             path = path.Trim
-            _logger.AddInformation(path)
+            '_logger.AddInformation(path)
             Dim tree = GitPathNode.GetRepositoriesTree(path, GitManager.Settings.FastScanRepositoryTree)
             If tree IsNot Nothing Then newRepTree.ChildNodes.Add(tree)
         Next
@@ -45,7 +45,7 @@
             _userProgressThread = New Threading.Thread(Sub()
                                                            actionDelegate()
                                                            _userProgressThread = Nothing
-                                                           _logger.AddMessage("...завершено")
+                                                           '_logger.AddMessage("...завершено")
                                                            RefreshAllTree()
                                                            SetStatus("", Nothing, 0, -1)
                                                        End Sub)
@@ -60,7 +60,7 @@
             _backgroundProgressThread = New Threading.Thread(Sub()
                                                                  actionDelegate()
                                                                  _backgroundProgressThread = Nothing
-                                                                 _logger.AddMessage("...завершено")
+                                                                 '_logger.AddMessage("...завершено")
                                                                  RefreshAllTree()
                                                                  SetStatus("", Nothing, 0, -1)
                                                              End Sub)
@@ -90,6 +90,14 @@
 
     Public Sub FetchTreeBackground(tree As GitPathNode, noError As Boolean)
         StartInThreadBackground(tree, "Фоновое обновление (fetch)", tree.GetChildCount(True), Sub() tree.UpdateFetch(True, False), noError)
+    End Sub
+
+    Public Sub PushTree(tree As GitPathNode, noError As Boolean)
+        StartInThreadUser(tree, "Отправка (push)", tree.GetChildCount(True), Sub() tree.push(True, False), noError)
+    End Sub
+
+    Public Sub PushSelected()
+        If SelectedRepNode IsNot Nothing Then PushTree(SelectedRepNode, False)
     End Sub
 
     Public Sub FetchSelected()
@@ -229,5 +237,9 @@
                 Next
             End If
         End If
+    End Sub
+
+    Private Sub menuPush_Click(sender As Object, e As EventArgs) Handles menuPush.Click
+        PushSelected()
     End Sub
 End Class

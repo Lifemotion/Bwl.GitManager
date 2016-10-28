@@ -52,6 +52,23 @@ Public Class RepositoryTree
                                          End Sub
     End Sub
 
+    Public Property StateText As String
+        Get
+            If InvokeRequired Then
+                Return Invoke(Function() lState.Text)
+            Else
+                Return lState.Text
+            End If
+        End Get
+        Set(value As String)
+            If InvokeRequired Then
+                Invoke(Sub() lState.Text = value)
+            Else
+                lState.Text = value
+            End If
+        End Set
+    End Property
+
     Private Function AddRepNodesRecursive(parentNode As TreeNode, repNode As GitPathNode, filter As String) As Boolean
         Dim myNode = parentNode.Nodes.Add(repNode.Name, repNode.Name)
         myNode.Tag = repNode
@@ -144,7 +161,12 @@ Public Class RepositoryTree
     End Sub
 
     Public Sub SetStatus(text As String, repo As GitPathNode, maximum As Integer, value As Integer)
-        If text > "" Then _logger.AddMessage(text)
+        '  If text > "" Then _logger.AddMessage(text)
+        StateText = text
+        If StateText > "" Then
+            '    lState.
+        End If
+
         Me.Invoke(Sub()
                       If maximum > 0 Then pbProgress.Maximum = maximum
                       If value >= 0 Then

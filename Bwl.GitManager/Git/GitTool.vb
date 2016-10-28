@@ -96,7 +96,7 @@
 
     Public Shared Function RepositoryLog(repository As String, graph As Boolean, count As Integer) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
-        Dim cmd = "log --pretty=format:""%h %cd %d %s"""
+        Dim cmd = "log --pretty=format:""" + GitManager.Settings.GitLogFormat.Value + """"
         If count > 0 Then cmd += " -" + count.ToString
         If graph Then cmd += " --graph"
         Dim result = Execute(repository, cmd).Replace(vbLf, vbCrLf)

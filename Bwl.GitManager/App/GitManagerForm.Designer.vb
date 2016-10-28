@@ -37,12 +37,12 @@ Partial Class GitManagerForm
         Me.ИнструментыToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuRescanPaths = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuSettings = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuExportSourceTree = New System.Windows.Forms.ToolStripMenuItem()
         Me.tbUpdate = New System.Windows.Forms.Timer(Me.components)
         Me.bUpdate = New System.Windows.Forms.Button()
         Me.Committer1 = New Bwl.GitManager.Committer()
         Me.RepositoryTree1 = New Bwl.GitManager.RepositoryTreeWithActions()
         Me.ActionButtons1 = New Bwl.GitManager.ActionButtons()
-        Me.menuExportSourceTree = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -51,11 +51,11 @@ Partial Class GitManagerForm
         Me.tbStatus.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbStatus.Font = New System.Drawing.Font("Lucida Console", 6.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
+        Me.tbStatus.Font = New System.Drawing.Font("Lucida Console", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
         Me.tbStatus.Location = New System.Drawing.Point(273, 26)
         Me.tbStatus.Multiline = True
         Me.tbStatus.Name = "tbStatus"
-        Me.tbStatus.Size = New System.Drawing.Size(497, 340)
+        Me.tbStatus.Size = New System.Drawing.Size(677, 340)
         Me.tbStatus.TabIndex = 4
         '
         'NotifyIcon
@@ -79,7 +79,7 @@ Partial Class GitManagerForm
         Me.DatagridLogWriter1.ShowInformation = True
         Me.DatagridLogWriter1.ShowMessages = True
         Me.DatagridLogWriter1.ShowWarnings = True
-        Me.DatagridLogWriter1.Size = New System.Drawing.Size(1002, 190)
+        Me.DatagridLogWriter1.Size = New System.Drawing.Size(1182, 190)
         Me.DatagridLogWriter1.TabIndex = 9
         '
         'MenuStrip1
@@ -87,7 +87,7 @@ Partial Class GitManagerForm
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.РепозиторийToolStripMenuItem, Me.ИнструментыToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(1004, 24)
+        Me.MenuStrip1.Size = New System.Drawing.Size(1184, 24)
         Me.MenuStrip1.TabIndex = 10
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -135,6 +135,12 @@ Partial Class GitManagerForm
         Me.menuSettings.Size = New System.Drawing.Size(308, 22)
         Me.menuSettings.Text = "Настройки..."
         '
+        'menuExportSourceTree
+        '
+        Me.menuExportSourceTree.Name = "menuExportSourceTree"
+        Me.menuExportSourceTree.Size = New System.Drawing.Size(308, 22)
+        Me.menuExportSourceTree.Text = "Экспортировать репозитории в SourceTree"
+        '
         'tbUpdate
         '
         Me.tbUpdate.Enabled = True
@@ -144,7 +150,7 @@ Partial Class GitManagerForm
         '
         Me.bUpdate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bUpdate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
-        Me.bUpdate.Location = New System.Drawing.Point(808, 621)
+        Me.bUpdate.Location = New System.Drawing.Point(988, 621)
         Me.bUpdate.Name = "bUpdate"
         Me.bUpdate.Size = New System.Drawing.Size(193, 23)
         Me.bUpdate.TabIndex = 15
@@ -159,7 +165,7 @@ Partial Class GitManagerForm
         Me.Committer1.ConnectedRepositoryTree = Me.RepositoryTree1
         Me.Committer1.Location = New System.Drawing.Point(273, 373)
         Me.Committer1.Name = "Committer1"
-        Me.Committer1.Size = New System.Drawing.Size(497, 78)
+        Me.Committer1.Size = New System.Drawing.Size(677, 78)
         Me.Committer1.TabIndex = 14
         '
         'RepositoryTree1
@@ -169,28 +175,23 @@ Partial Class GitManagerForm
         Me.RepositoryTree1.Location = New System.Drawing.Point(1, 26)
         Me.RepositoryTree1.Name = "RepositoryTree1"
         Me.RepositoryTree1.Size = New System.Drawing.Size(266, 425)
+        Me.RepositoryTree1.StateText = ""
         Me.RepositoryTree1.TabIndex = 13
         '
         'ActionButtons1
         '
         Me.ActionButtons1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ActionButtons1.Location = New System.Drawing.Point(772, 25)
+        Me.ActionButtons1.Location = New System.Drawing.Point(952, 25)
         Me.ActionButtons1.Name = "ActionButtons1"
         Me.ActionButtons1.Size = New System.Drawing.Size(229, 424)
         Me.ActionButtons1.TabIndex = 11
-        '
-        'menuExportSourceTree
-        '
-        Me.menuExportSourceTree.Name = "menuExportSourceTree"
-        Me.menuExportSourceTree.Size = New System.Drawing.Size(308, 22)
-        Me.menuExportSourceTree.Text = "Экспортировать репозитории в SourceTree"
         '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1004, 646)
+        Me.ClientSize = New System.Drawing.Size(1184, 646)
         Me.Controls.Add(Me.bUpdate)
         Me.Controls.Add(Me.Committer1)
         Me.Controls.Add(Me.RepositoryTree1)
