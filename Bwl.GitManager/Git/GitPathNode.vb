@@ -154,9 +154,7 @@
 
     Public Sub New(path As String)
         If IO.Directory.Exists(path) = False Then Throw New ArgumentException("Path not exists: " + path)
-        If IO.File.Exists(IO.Path.Combine(path, "Bwl.GitManager.sln")) And IO.File.Exists(IO.Path.Combine(path, "Bwl.GitManager", "Bwl.GitManager.vbproj")) Then
-            GitManager.GitManagerRepository = Me
-        End If
+
         If IO.Directory.Exists(IO.Path.Combine(path, ".git")) Then
             Status.IsRepository = True
             Status.RawStatusText = "(fast scan)"

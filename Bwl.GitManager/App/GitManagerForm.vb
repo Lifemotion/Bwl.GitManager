@@ -4,7 +4,7 @@ Imports Microsoft.Win32
 Public Class GitManagerForm
     Inherits Form
     Private _logger As Logger = GitManager.App.RootLogger
-    Private _autostartSetting As New BooleanSetting(GitManager.App.RootStorage, "Autostart", False, "Запускать при старте Windows", "")
+    Private _autostartSetting As New BooleanSetting(GitManager.App.RootStorage, "Autostart", True, "Запускать при старте Windows", "")
 
     Public Sub New()
         InitializeComponent()
@@ -111,6 +111,19 @@ Public Class GitManagerForm
         Catch ex As Exception
             MsgBox(ex.Message, vbCritical)
         End Try
+    End Sub
+
+    Private Sub menuCheckUpdates_Click(sender As Object, e As EventArgs) Handles menuCheckUpdates.Click
+        MsgBox("Будет выполнена проверка обновлений. Она может занять несколько минут.", vbYes)
+        GitManager.Updater.CheckUpdates()
+        bUpdate.Visible = GitManager.Updater.UpdateAvailable
+        If (bUpdate.Visible) Then
+            If MsgBox("Обновление доступно. Обновить?", vbYesNo) = MsgBoxResult.Yes Then
+                GitManager.Updater.RunUpdate()
+            End If
+        Else
+            MsgBox("Обновлений нет.", vbYes)
+        End If
     End Sub
 End Class
 

@@ -43,6 +43,7 @@ Partial Class GitManagerForm
         Me.Committer1 = New Bwl.GitManager.Committer()
         Me.RepositoryTree1 = New Bwl.GitManager.RepositoryTreeWithActions()
         Me.ActionButtons1 = New Bwl.GitManager.ActionButtons()
+        Me.menuCheckUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -118,7 +119,7 @@ Partial Class GitManagerForm
         '
         'ИнструментыToolStripMenuItem
         '
-        Me.ИнструментыToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuRescanPaths, Me.menuSettings, Me.menuExportSourceTree})
+        Me.ИнструментыToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuRescanPaths, Me.menuSettings, Me.menuExportSourceTree, Me.menuCheckUpdates})
         Me.ИнструментыToolStripMenuItem.Name = "ИнструментыToolStripMenuItem"
         Me.ИнструментыToolStripMenuItem.Size = New System.Drawing.Size(95, 20)
         Me.ИнструментыToolStripMenuItem.Text = "Инструменты"
@@ -187,6 +188,12 @@ Partial Class GitManagerForm
         Me.ActionButtons1.Size = New System.Drawing.Size(229, 424)
         Me.ActionButtons1.TabIndex = 11
         '
+        'menuCheckUpdates
+        '
+        Me.menuCheckUpdates.Name = "menuCheckUpdates"
+        Me.menuCheckUpdates.Size = New System.Drawing.Size(308, 22)
+        Me.menuCheckUpdates.Text = "Проверить обновления"
+        '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -226,4 +233,5 @@ Partial Class GitManagerForm
     Friend WithEvents tbUpdate As Timer
     Friend WithEvents bUpdate As Button
     Friend WithEvents menuExportSourceTree As ToolStripMenuItem
+    Friend WithEvents menuCheckUpdates As ToolStripMenuItem
 End Class
