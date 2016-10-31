@@ -16,13 +16,13 @@ Public Class GitManagerForm
             Text += " " + Application.ProductVersion.ToString + " [" + IO.File.GetLastWriteTime(Application.ExecutablePath).ToString + "]"
         Catch ex As Exception
         End Try
-
         Try
             GitTool.Init()
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical)
             Application.Exit()
         End Try
+        GitManager.Updater.CheckUpdatesBackground()
         RepositoryTree1.RescanRepositoryPaths()
         AddHandler My.Application.StartupNextInstance, AddressOf Application_StartupNextInstance
         AddHandler RepositoryTree1.TreeRefreshed, AddressOf RepositoryTree1_TreeRefreshed
@@ -98,25 +98,11 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub tbUpdate_Tick(sender As Object, e As EventArgs) Handles tbUpdate.Tick
-        bUpdate.Visible = False
-        If GitManager.GitManagerRepository IsNot Nothing Then
-            If GitManager.GitManagerRepository.Status.CanPull Then
-                'обновление возможно
-                bUpdate.Visible = True
-            End If
-        End If
+        bUpdate.Visible = GitManager.Updater.UpdateAvailable
     End Sub
 
     Private Sub bUpdate_Click(sender As Object, e As EventArgs) Handles bUpdate.Click
-        Try
-            Dim prc As New Process
-            prc.StartInfo.WorkingDirectory = GitManager.GitManagerRepository.FullPath
-            prc.StartInfo.FileName = "!!autoupdate.cmd"
-            prc.StartInfo.WindowStyle = ProcessWindowStyle.Normal
-            prc.Start()
-        Catch ex As Exception
-            MsgBox(ex.Message, vbCritical)
-        End Try
+        GitManager.Updater.RunUpdate()
     End Sub
 
     Private Sub menuExportSourceTree_Click(sender As Object, e As EventArgs) Handles menuExportSourceTree.Click
