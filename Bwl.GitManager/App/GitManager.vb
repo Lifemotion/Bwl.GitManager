@@ -25,6 +25,7 @@ Public Class GitManager
         Public Shared Property ShowCommandsAsButtons As New BooleanSetting(_storage, "ShowCommandsAsButtons", True)
         Public Shared Property LastRepCount As New IntegerSetting(_storage, "LastRepositoryCount", 0)
         Public Shared Property FastScanRepositoryTree As New BooleanSetting(_storage, "FastScanRepositoryTree", True)
-
     End Class
+
+    Public Shared Property Updater As New GitManagerUpdater
 End Class

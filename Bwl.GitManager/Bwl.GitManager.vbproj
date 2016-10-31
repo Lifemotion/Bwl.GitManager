@@ -25,7 +25,8 @@
     <DocumentationFile>Bwl.GitManager.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AdditionalParameters></AdditionalParameters>
+    <AdditionalParameters>
+    </AdditionalParameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -87,6 +88,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="App\GitManager.vb" />
+    <Compile Include="App\GitManagerUpdater.vb" />
     <Compile Include="GitServers\BitbucketServer.vb" />
     <Compile Include="GitServers\GithubServer.vb" />
     <Compile Include="GitServers\GitServers.vb" />
