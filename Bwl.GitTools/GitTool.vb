@@ -94,9 +94,9 @@
         Return result
     End Function
 
-    Public Shared Function RepositoryLog(repository As String, graph As Boolean, count As Integer) As String
+    Public Shared Function RepositoryLog(repository As String, graph As Boolean, count As Integer, Optional gitLogFormat As String = "%h %cr %cn %s") As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
-        Dim cmd = "log --pretty=format:""" + GitManager.Settings.GitLogFormat.Value + """"
+        Dim cmd = "log --pretty=format:""" + gitLogFormat + """"
         If count > 0 Then cmd += " -" + count.ToString
         If graph Then cmd += " --graph"
         Dim result = Execute(repository, cmd).Replace(vbLf, vbCrLf)
@@ -124,27 +124,49 @@
                 End Try
             End If
             Dim result = Execute(repository, " -c advice.statusHints=false -c core.quotepath=false status").ToLower.Replace(vbLf, vbCrLf)
-                status.RawStatusText = result
-                If result.Contains("not a git repository") Then
-                    status.IsRepository = False
-                Else
-                    status.IsRepository = True
-                    If result.Contains("untracked") Then status.IsUntrackedFiles = True
-                    If result.Contains("modified") Then status.IsModifiedFiles = True
-                    If result.Contains("deleted") Then status.IsDeletedFiles = True
-                    If status.IsUntrackedFiles Then status.IsUncommittedChanges = True
-                    If status.IsModifiedFiles Then status.IsUncommittedChanges = True
-                    If status.IsDeletedFiles Then status.IsUncommittedChanges = True
-
-                    If result.Contains("branch is behind") Then status.CanPull = True
-                    If result.Contains("have diverged") Then status.CanPull = True : status.CanPush = True
-                    If result.Contains("branch is ahead") Then status.CanPush = True
-                    If result.Contains("branch is up-to-date") Then status.UpToDate = True
-
-                End If
+            status.RawStatusText = result
+            If result.Contains("not a git repository") Then
+                status.IsRepository = False
             Else
-                status.RawStatusText = "directory not exists"
+                status.IsRepository = True
+                If result.Contains("untracked") Then status.IsUntrackedFiles = True
+                If result.Contains("modified") Then status.IsModifiedFiles = True
+                If result.Contains("deleted") Then status.IsDeletedFiles = True
+                If status.IsUntrackedFiles Then status.IsUncommittedChanges = True
+                If status.IsModifiedFiles Then status.IsUncommittedChanges = True
+                If status.IsDeletedFiles Then status.IsUncommittedChanges = True
+
+                If result.Contains("branch is behind") Then status.CanPull = True
+                If result.Contains("have diverged") Then status.CanPull = True : status.CanPush = True
+                If result.Contains("branch is ahead") Then status.CanPush = True
+                If result.Contains("branch is up-to-date") Then status.UpToDate = True
+
+            End If
+        Else
+            status.RawStatusText = "directory not exists"
         End If
         Return status
     End Function
+
+    Public Shared Sub RepositoryPullOrClone(targetPath As String, url As String)
+        If IO.Directory.Exists(targetPath) Then
+            Dim status = GitTool.GetRepositoryStatus(targetPath)
+            If status.IsRepository = False Then IO.Directory.Delete(targetPath, True)
+        End If
+
+        If IO.Directory.Exists(targetPath) = False Then
+            Dim parent = IO.Path.Combine(targetPath, "..")
+            If IO.Directory.Exists(parent) = False Then IO.Directory.CreateDirectory(parent)
+            GitTool.RepositoryClone(parent, url)
+        End If
+
+        If IO.Directory.Exists(targetPath) Then
+            Dim status = GitTool.GetRepositoryStatus(targetPath)
+            If status.IsRepository Then
+                GitTool.RepositoryPull(targetPath)
+            Else
+                Throw New Exception("Failed to clone repository " + url)
+            End If
+        End If
+    End Sub
 End Class

@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Import Include="Bwl.GitTools" />
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
@@ -95,8 +96,6 @@
     <Compile Include="GitServers\IGitServer.vb" />
     <Compile Include="GitServers\StashServer.vb" />
     <Compile Include="Git\GitPathNode.vb" />
-    <Compile Include="Git\GitRepositoryStatus.vb" />
-    <Compile Include="Git\GitTool.vb" />
     <Compile Include="App\GitManagerForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -176,6 +175,12 @@
     <None Include="Resources\Help and Support.ico" />
     <None Include="Resources\Arrow Down.ico" />
     <None Include="Resources\Warning.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bwl.GitTools\Bwl.GitTools.vbproj">
+      <Project>{f0cb2c8f-9a4f-4378-bf59-3e849eede7c3}</Project>
+      <Name>Bwl.GitTools</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

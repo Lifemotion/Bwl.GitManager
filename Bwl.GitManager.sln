@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Bwl.GitManager", "Bwl.GitManager\Bwl.GitManager.vbproj", "{0A5C0841-69F3-4091-9C7E-BBB2E92E2C9E}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Bwl.GitTools", "Bwl.GitTools\Bwl.GitTools.vbproj", "{F0CB2C8F-9A4F-4378-BF59-3E849EEDE7C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0A5C0841-69F3-4091-9C7E-BBB2E92E2C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A5C0841-69F3-4091-9C7E-BBB2E92E2C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A5C0841-69F3-4091-9C7E-BBB2E92E2C9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0CB2C8F-9A4F-4378-BF59-3E849EEDE7C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0CB2C8F-9A4F-4378-BF59-3E849EEDE7C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0CB2C8F-9A4F-4378-BF59-3E849EEDE7C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0CB2C8F-9A4F-4378-BF59-3E849EEDE7C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
