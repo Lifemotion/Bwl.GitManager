@@ -29,10 +29,17 @@
     Private Sub CreateActionButtonCommand(command As String, repPath As String)
         Dim parts = command.Split({"|"}, StringSplitOptions.None)
         If parts.Length > 2 Then
-            If IO.File.Exists(parts(1)) Then
-                CreateActionButton(parts(0), repPath, parts(1), parts(2), False, Color.White)
+            If parts(0) = "GitterCake" Then
+                Dim appManagerPath = IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Bwl AppManager", "GitterCake", "output", "Release", "Gitter.exe")
+                If IO.File.Exists(appManagerPath) Then
+                    parts(1) = appManagerPath
+                End If
             End If
-        End If
+
+            If IO.File.Exists(parts(1)) Then
+                    CreateActionButton(parts(0), repPath, parts(1), parts(2), False, Color.White)
+                End If
+            End If
     End Sub
 
     Private Sub CleanActionButtons()
