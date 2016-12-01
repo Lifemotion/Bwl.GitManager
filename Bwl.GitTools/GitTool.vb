@@ -65,7 +65,7 @@
 
     Public Shared Function RepositoryClean(repository As String, removeIgnoredFiles As Boolean) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
-        Dim result = Execute(repository, "clean -f" + If(removeIgnoredFiles, " -x", "")).ToLower
+        Dim result = Execute(repository, "clean -f -d" + If(removeIgnoredFiles, " -x", "")).ToLower
         Return result
     End Function
 
