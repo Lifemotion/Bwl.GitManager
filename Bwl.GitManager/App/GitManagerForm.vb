@@ -68,14 +68,21 @@ Public Class GitManagerForm
         Me.Show()
     End Sub
 
-    Private Sub TreeView1_AfterSelect(node As TreeNode, repNode As GitPathNode) Handles RepositoryTree1.NodeSelected
+    Private Sub UpdateSelectedRepView() Handles RepositoryTree1.NodeSelected
         ActionButtons1.SetRepNode(RepositoryTree1.SelectedRepNode)
         If RepositoryTree1.SelectedRepNode IsNot Nothing Then
             Committer1.Refresh()
             If RepositoryTree1.SelectedRepNode.Status.IsRepository Then
                 Dim log = GitTool.RepositoryLog(RepositoryTree1.SelectedRepNode.FullPath, True, 10)
                 tbStatus.Text = log + vbCrLf + vbCrLf + vbCrLf + RepositoryTree1.SelectedRepNode.Status.RawStatusText
+                lbBranch.Text = RepositoryTree1.SelectedRepNode.Status.OnBranch
+                lbBranch.Visible = True
+                lbBranchLabel.Visible = True
+                cbBranch.Visible = True
             Else
+                lbBranch.Visible = False
+                lbBranchLabel.Visible = False
+                cbBranch.Visible = False
                 tbStatus.Text = RepositoryTree1.SelectedRepNode.FullPath
             End If
         End If
@@ -124,6 +131,41 @@ Public Class GitManagerForm
         Else
             MsgBox("Обновлений нет.", vbYes)
         End If
+    End Sub
+
+    Private Sub cbBranch_Click(sender As Object, e As EventArgs) Handles cbBranch.DropDown
+        Dim selected = RepositoryTree1.SelectedRepNode
+        If selected IsNot Nothing Then
+            cbBranch.Items.Clear()
+            If selected.Status.IsRepository Then
+                Dim branches = GitTool.GetBranches(selected.FullPath)
+                Dim current = selected.Status.OnBranch
+                cbBranch.Items.AddRange(branches)
+                cbBranch.Text = current
+            End If
+        End If
+    End Sub
+
+    Private Sub cbBranch_SelectedValueChanged1(sender As Object, e As EventArgs) Handles cbBranch.DropDownClosed
+
+    End Sub
+
+    Private Sub cbBranch_SelectedValueChanged(sender As Object, e As EventArgs) Handles cbBranch.SelectedValueChanged
+        Dim selected = RepositoryTree1.SelectedRepNode
+        If selected IsNot Nothing Then
+            If selected.Status.IsRepository Then
+                Dim current = selected.Status.OnBranch
+                Dim changeTo = cbBranch.Text
+                If current <> changeTo AndAlso changeTo > "" Then
+                    GitTool.SelectBranch(selected.FullPath, changeTo)
+                    UpdateSelectedRepView()
+                End If
+            End If
+        End If
+    End Sub
+
+    Private Sub UpdateSelectedRepView(node As TreeNode, repNode As GitPathNode) Handles RepositoryTree1.NodeSelected
+
     End Sub
 End Class
 

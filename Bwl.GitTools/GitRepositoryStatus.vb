@@ -10,4 +10,5 @@
     Public Property RawStatusText As String = ""
     Public Property IsSpecialRepository As String = ""
     Public Property AutoPullSettings As String = ""
+    Public Property OnBranch As String
 End Class

@@ -124,6 +124,7 @@
                 End Try
             End If
             Dim result = Execute(repository, " -c advice.statusHints=false -c core.quotepath=false status").ToLower.Replace(vbLf, vbCrLf)
+            Dim lines = result.Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
             status.RawStatusText = result
             If result.Contains("not a git repository") Then
                 status.IsRepository = False
@@ -140,12 +141,54 @@
                 If result.Contains("have diverged") Then status.CanPull = True : status.CanPush = True
                 If result.Contains("branch is ahead") Then status.CanPush = True
                 If result.Contains("branch is up-to-date") Then status.UpToDate = True
-
+                For Each line In lines
+                    If line.Contains("on branch ") Then
+                        status.OnBranch = line.Replace("on branch ", "")
+                    End If
+                Next
             End If
         Else
             status.RawStatusText = "directory not exists"
         End If
         Return status
+    End Function
+
+    Public Shared Sub SelectBranch(repository As String, changeTo As String)
+        If Not IO.Directory.Exists(repository) Then Throw New Exception("directory not exists")
+        If changeTo.Contains("/") Then
+            'remote
+            Dim outp = Execute(repository, "checkout --track " + changeTo).ToLower.Replace(vbLf, vbCrLf)
+            If outp.Contains("error:") Or outp.Contains("fatal:") Then Throw New Exception("Git Error Message: " + outp)
+        Else
+            Dim outp = Execute(repository, "checkout " + changeTo).ToLower.Replace(vbLf, vbCrLf)
+            If outp.Contains("error:") Or outp.Contains("fatal:") Then Throw New Exception("Git Error Message: " + outp)
+        End If
+
+    End Sub
+
+    Public Shared Function GetBranches(repository As String) As String()
+        Dim result As New List(Of String)
+        Dim locals As New List(Of String)
+        If IO.Directory.Exists(repository) Then
+            Dim outp = Execute(repository, "branch -a").Replace(vbLf, vbCrLf)
+            Dim lines = outp.Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
+            For Each newline In lines
+                newline = newline.Replace("*", "").Replace(" ", "")
+                If newline.Contains("/") Then
+                    'remote branch
+                    Dim localExists As Boolean = False
+                    For Each local In locals
+                        If newline.Contains(local) Then localExists = True : Exit For
+                    Next
+                    If Not localExists Then result.Add(newline)
+                Else
+                    locals.Add(newline)
+                    result.Add(newline)
+                End If
+
+            Next
+        End If
+        Return result.ToArray
     End Function
 
     Public Shared Sub RepositoryPullOrClone(targetPath As String, url As String)

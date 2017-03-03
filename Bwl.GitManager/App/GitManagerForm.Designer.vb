@@ -38,12 +38,15 @@ Partial Class GitManagerForm
         Me.menuRescanPaths = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuSettings = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuExportSourceTree = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuCheckUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.tbUpdate = New System.Windows.Forms.Timer(Me.components)
         Me.bUpdate = New System.Windows.Forms.Button()
+        Me.lbBranchLabel = New System.Windows.Forms.Label()
+        Me.lbBranch = New System.Windows.Forms.Label()
+        Me.cbBranch = New System.Windows.Forms.ComboBox()
         Me.Committer1 = New Bwl.GitManager.Committer()
         Me.RepositoryTree1 = New Bwl.GitManager.RepositoryTreeWithActions()
         Me.ActionButtons1 = New Bwl.GitManager.ActionButtons()
-        Me.menuCheckUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -53,10 +56,10 @@ Partial Class GitManagerForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbStatus.Font = New System.Drawing.Font("Lucida Console", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
-        Me.tbStatus.Location = New System.Drawing.Point(273, 26)
+        Me.tbStatus.Location = New System.Drawing.Point(273, 47)
         Me.tbStatus.Multiline = True
         Me.tbStatus.Name = "tbStatus"
-        Me.tbStatus.Size = New System.Drawing.Size(677, 340)
+        Me.tbStatus.Size = New System.Drawing.Size(677, 319)
         Me.tbStatus.TabIndex = 4
         '
         'NotifyIcon
@@ -142,6 +145,12 @@ Partial Class GitManagerForm
         Me.menuExportSourceTree.Size = New System.Drawing.Size(308, 22)
         Me.menuExportSourceTree.Text = "Экспортировать репозитории в SourceTree"
         '
+        'menuCheckUpdates
+        '
+        Me.menuCheckUpdates.Name = "menuCheckUpdates"
+        Me.menuCheckUpdates.Size = New System.Drawing.Size(308, 22)
+        Me.menuCheckUpdates.Text = "Проверить обновления"
+        '
         'tbUpdate
         '
         Me.tbUpdate.Enabled = True
@@ -150,7 +159,7 @@ Partial Class GitManagerForm
         'bUpdate
         '
         Me.bUpdate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bUpdate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
+        Me.bUpdate.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
         Me.bUpdate.Location = New System.Drawing.Point(988, 621)
         Me.bUpdate.Name = "bUpdate"
         Me.bUpdate.Size = New System.Drawing.Size(193, 23)
@@ -158,6 +167,37 @@ Partial Class GitManagerForm
         Me.bUpdate.Text = "Доступно обновление!"
         Me.bUpdate.UseVisualStyleBackColor = True
         Me.bUpdate.Visible = False
+        '
+        'lbBranchLabel
+        '
+        Me.lbBranchLabel.AutoSize = True
+        Me.lbBranchLabel.Location = New System.Drawing.Point(274, 28)
+        Me.lbBranchLabel.Name = "lbBranchLabel"
+        Me.lbBranchLabel.Size = New System.Drawing.Size(41, 13)
+        Me.lbBranchLabel.TabIndex = 16
+        Me.lbBranchLabel.Text = "Ветка:"
+        Me.lbBranchLabel.Visible = False
+        '
+        'lbBranch
+        '
+        Me.lbBranch.AutoSize = True
+        Me.lbBranch.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
+        Me.lbBranch.Location = New System.Drawing.Point(318, 28)
+        Me.lbBranch.Name = "lbBranch"
+        Me.lbBranch.Size = New System.Drawing.Size(40, 13)
+        Me.lbBranch.TabIndex = 17
+        Me.lbBranch.Text = "<--->"
+        Me.lbBranch.Visible = False
+        '
+        'cbBranch
+        '
+        Me.cbBranch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cbBranch.FormattingEnabled = True
+        Me.cbBranch.Location = New System.Drawing.Point(464, 24)
+        Me.cbBranch.Name = "cbBranch"
+        Me.cbBranch.Size = New System.Drawing.Size(486, 21)
+        Me.cbBranch.TabIndex = 18
+        Me.cbBranch.Visible = False
         '
         'Committer1
         '
@@ -188,17 +228,14 @@ Partial Class GitManagerForm
         Me.ActionButtons1.Size = New System.Drawing.Size(229, 424)
         Me.ActionButtons1.TabIndex = 11
         '
-        'menuCheckUpdates
-        '
-        Me.menuCheckUpdates.Name = "menuCheckUpdates"
-        Me.menuCheckUpdates.Size = New System.Drawing.Size(308, 22)
-        Me.menuCheckUpdates.Text = "Проверить обновления"
-        '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1184, 646)
+        Me.Controls.Add(Me.cbBranch)
+        Me.Controls.Add(Me.lbBranch)
+        Me.Controls.Add(Me.lbBranchLabel)
         Me.Controls.Add(Me.bUpdate)
         Me.Controls.Add(Me.Committer1)
         Me.Controls.Add(Me.RepositoryTree1)
@@ -206,6 +243,7 @@ Partial Class GitManagerForm
         Me.Controls.Add(Me.MenuStrip1)
         Me.Controls.Add(Me.DatagridLogWriter1)
         Me.Controls.Add(Me.tbStatus)
+        Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "GitManagerForm"
@@ -234,4 +272,7 @@ Partial Class GitManagerForm
     Friend WithEvents bUpdate As Button
     Friend WithEvents menuExportSourceTree As ToolStripMenuItem
     Friend WithEvents menuCheckUpdates As ToolStripMenuItem
+    Friend WithEvents lbBranchLabel As Label
+    Friend WithEvents lbBranch As Label
+    Friend WithEvents cbBranch As ComboBox
 End Class
