@@ -108,8 +108,12 @@
 
     Public Sub UpdateFetch(recursive As Boolean, noProgress As Boolean)
         If Not noProgress Then _progress += 1 : RaiseEvent Progress(_progress, Me)
-        If FullPath <> "#" Then
-            GitTool.RepositoryFetch(FullPath)
+        If FullPath <> "#" And Status.IsRepository = True Then
+            Try
+                GitTool.RepositoryFetch(FullPath)
+            Catch ex As Exception
+                GitManager.App.RootLogger.AddWarning("Fetch failed for " + FullPath + ": " + ex.Message)
+            End Try
             _status = GitTool.GetRepositoryStatus(FullPath)
             If _status.CanPull AndAlso GitManager.Settings.AutoPullAfterFetch.Value = True AndAlso _status.AutoPullSettings > "" Then
                 Dim settings = _status.AutoPullSettings.ToLower.Split(",")
