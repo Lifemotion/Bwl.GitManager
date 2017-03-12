@@ -8,13 +8,17 @@
         Application.DoEvents()
         Dim msg = Me.Invoke(Function() tbCommitMessage.Text)
         If msg = "" Then msg = "(no message)"
-        Dim result0 = GitTool.RepositoryAdd(rep.FullPath, "*")
-        Dim result1 = GitTool.RepositoryCommit(rep.FullPath, msg)
-        _logger.AddMessage(result1)
-        Dim result2 = GitTool.RepositoryPush(rep.FullPath)
-        rep.UpdateFetch(False, True)
-        ConnectedRepositoryTree.RefreshAllTree()
-        _logger.AddMessage("...завершено")
+        Try
+            Dim result0 = GitTool.RepositoryAdd(rep.FullPath, "*")
+            Dim result1 = GitTool.RepositoryCommit(rep.FullPath, msg)
+            _logger.AddMessage(result1)
+            Dim result2 = GitTool.RepositoryPush(rep.FullPath)
+            rep.UpdateFetch(False, True)
+            ConnectedRepositoryTree.RefreshAllTree()
+            _logger.AddMessage("...завершено")
+        Catch ex As Exception
+            _logger.AddError("Push failed: " + ex.Message)
+        End Try
     End Sub
 
     Public Overrides Sub Refresh()
