@@ -42,36 +42,43 @@
     Public Shared Function RepositoryFetch(repository As String) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "fetch").ToLower
-            Return result
+        CheckErrors(result)
+        Return result
     End Function
 
     Public Shared Function RepositoryPull(repository As String) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "pull").ToLower
+        CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function RepositoryPush(repository As String) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "push").ToLower
+        CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function RepositoryReset(repository As String, mode As String) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "reset --" + mode).ToLower
+        CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function RepositoryClean(repository As String, removeIgnoredFiles As Boolean) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "clean -f -d" + If(removeIgnoredFiles, " -x", "")).ToLower
+        CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function GetRepositoryRemotes(repository As String) As Dictionary(Of String, String)
         If Not IO.Directory.Exists(repository) Then Throw New Exception("directory not exists")
-        Dim result = Execute(repository, "remote -v").Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
+        Dim outp = Execute(repository, "remote -v")
+        CheckErrors(outp)
+        Dim result = outp.Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
         Dim origins As New Dictionary(Of String, String)
         For Each line In result
             Dim parts = line.Split({" ",vbTab }, StringSplitOptions.RemoveEmptyEntries)
@@ -85,12 +92,14 @@
     Public Shared Function RepositoryCommit(repository As String, message As String) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "commit -a -m """ + message + """")
+        CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function RepositoryAdd(repository As String, filter As String) As String
         If Not IO.Directory.Exists(repository) Then Return "directory not exists"
         Dim result = Execute(repository, "add " + filter)
+        CheckErrors(result)
         Return result
     End Function
 
@@ -100,6 +109,7 @@
         If count > 0 Then cmd += " -" + count.ToString
         If graph Then cmd += " --graph"
         Dim result = Execute(repository, cmd).Replace(vbLf, vbCrLf)
+        CheckErrors(result)
         Return result
     End Function
 
@@ -107,6 +117,7 @@
         If Not IO.Directory.Exists(folder) Then Return "directory not exists"
         Dim cmd = "clone " + url
         Dim result = Execute(folder, cmd).Replace(vbLf, vbCrLf)
+        CheckErrors(result)
         If result.ToLower.Contains("cloning into") Then
             Return result
         Else
@@ -153,17 +164,20 @@
         Return status
     End Function
 
+    Private Shared Sub CheckErrors(response As String)
+        If response.Contains("error:") Or response.Contains("fatal:") Then Throw New Exception("Git Error Message: " + response)
+    End Sub
+
     Public Shared Sub SelectBranch(repository As String, changeTo As String)
         If Not IO.Directory.Exists(repository) Then Throw New Exception("directory not exists")
         If changeTo.Contains("/") Then
             'remote
             Dim outp = Execute(repository, "checkout --track " + changeTo).ToLower.Replace(vbLf, vbCrLf)
-            If outp.Contains("error:") Or outp.Contains("fatal:") Then Throw New Exception("Git Error Message: " + outp)
+            CheckErrors(outp)
         Else
             Dim outp = Execute(repository, "checkout " + changeTo).ToLower.Replace(vbLf, vbCrLf)
-            If outp.Contains("error:") Or outp.Contains("fatal:") Then Throw New Exception("Git Error Message: " + outp)
+            CheckErrors(outp)
         End If
-
     End Sub
 
     Public Shared Function GetBranches(repository As String) As String()
@@ -171,6 +185,7 @@
         Dim locals As New List(Of String)
         If IO.Directory.Exists(repository) Then
             Dim outp = Execute(repository, "branch -a").Replace(vbLf, vbCrLf)
+            CheckErrors(outp)
             Dim lines = outp.Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
             For Each newline In lines
                 newline = newline.Replace("*", "").Replace(" ", "")
