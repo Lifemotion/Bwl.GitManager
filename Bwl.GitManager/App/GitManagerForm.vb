@@ -73,12 +73,19 @@ Public Class GitManagerForm
         If RepositoryTree1.SelectedRepNode IsNot Nothing Then
             Committer1.Refresh()
             If RepositoryTree1.SelectedRepNode.Status.IsRepository Then
-                Dim log = GitTool.RepositoryLog(RepositoryTree1.SelectedRepNode.FullPath, True, 10)
-                tbStatus.Text = log + vbCrLf + vbCrLf + vbCrLf + RepositoryTree1.SelectedRepNode.Status.RawStatusText
-                lbBranch.Text = RepositoryTree1.SelectedRepNode.Status.OnBranch
-                lbBranch.Visible = True
-                lbBranchLabel.Visible = True
-                cbBranch.Visible = True
+                Try
+                    Dim log = GitTool.RepositoryLog(RepositoryTree1.SelectedRepNode.FullPath, True, 10)
+                    tbStatus.Text = log + vbCrLf + vbCrLf + vbCrLf + RepositoryTree1.SelectedRepNode.Status.RawStatusText
+                    lbBranch.Text = RepositoryTree1.SelectedRepNode.Status.OnBranch
+                    lbBranch.Visible = True
+                    lbBranchLabel.Visible = True
+                    cbBranch.Visible = True
+                Catch ex As Exception
+                    lbBranch.Visible = False
+                    lbBranchLabel.Visible = False
+                    cbBranch.Visible = False
+                    tbStatus.Text = ex.Message
+                End Try
             Else
                 lbBranch.Visible = False
                 lbBranchLabel.Visible = False

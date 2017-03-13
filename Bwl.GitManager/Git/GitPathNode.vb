@@ -83,8 +83,12 @@
     Public Sub UpdatePull(recursive As Boolean, onlyChanged As Boolean)
         _progress += 1 : RaiseEvent Progress(_progress, Me)
         If FullPath <> "#" Then
-            If Status.CanPull Or onlyChanged = False Then GitTool.RepositoryPull(FullPath)
-            _Status = GitTool.GetRepositoryStatus(FullPath)
+            Try
+                If Status.CanPull Or onlyChanged = False Then GitTool.RepositoryPull(FullPath)
+                _status = GitTool.GetRepositoryStatus(FullPath)
+            Catch ex As Exception
+                GitManager.App.RootLogger.AddWarning("Fetch failed for " + FullPath + ": " + ex.Message)
+            End Try
         End If
         If recursive Then
             For Each child In ChildNodes
