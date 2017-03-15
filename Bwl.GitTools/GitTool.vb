@@ -3,6 +3,7 @@
     Public Shared Property Priority As ProcessPriorityClass = ProcessPriorityClass.Idle
 
     Private Shared _toolPath As String
+    Public Shared Event Logger(type As String, msg As String)
 
     Public Shared Sub Init()
         Dim paths = "C:\Program Files\Git\bin\git.exe;C:\Program Files (x86)\Git\bin\git.exe".Split(";")
@@ -13,12 +14,16 @@
                 Exit Sub
             End If
         Next
+        RaiseEvent Logger("ERR", "Git not found")
         Throw New Exception("Git not found")
     End Sub
 
     Public Shared Function Execute(repository As String, args As String) As String
-        If _toolPath = "" Then Throw New Exception("Call init first")
-        If IO.Directory.Exists(repository) = False Then Throw New Exception("Repository path not exists")
+        If _toolPath = "" Then
+            RaiseEvent Logger("ERR", "GitTool: Call init first")
+            Throw New Exception("Call init first")
+        End If
+        CheckDirectory(repository)
         Dim prc As New Process
         prc.StartInfo.UseShellExecute = False
         prc.StartInfo.RedirectStandardOutput = True
@@ -40,42 +45,42 @@
     End Function
 
     Public Shared Function RepositoryFetch(repository As String) As String
-        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        CheckDirectory(repository)
         Dim result = Execute(repository, "fetch").ToLower
         CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function RepositoryPull(repository As String) As String
-        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        CheckDirectory(repository)
         Dim result = Execute(repository, "pull").ToLower
         CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function RepositoryPush(repository As String) As String
-        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        CheckDirectory(repository)
         Dim result = Execute(repository, "push").ToLower
         CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function RepositoryReset(repository As String, mode As String) As String
-        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        CheckDirectory(repository)
         Dim result = Execute(repository, "reset --" + mode).ToLower
         CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function RepositoryClean(repository As String, removeIgnoredFiles As Boolean) As String
-        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        CheckDirectory(repository)
         Dim result = Execute(repository, "clean -f -d" + If(removeIgnoredFiles, " -x", "")).ToLower
         CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function GetRepositoryRemotes(repository As String) As Dictionary(Of String, String)
-        If Not IO.Directory.Exists(repository) Then Throw New Exception("directory not exists")
+        CheckDirectory(repository)
         Dim outp = Execute(repository, "remote -v")
         CheckErrors(outp)
         Dim result = outp.Split({vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
@@ -90,21 +95,21 @@
     End Function
 
     Public Shared Function RepositoryCommit(repository As String, message As String) As String
-        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        CheckDirectory(repository)
         Dim result = Execute(repository, "commit -a -m """ + message + """")
         CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function RepositoryAdd(repository As String, filter As String) As String
-        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        CheckDirectory(repository)
         Dim result = Execute(repository, "add " + filter)
         CheckErrors(result)
         Return result
     End Function
 
     Public Shared Function RepositoryLog(repository As String, graph As Boolean, count As Integer, Optional gitLogFormat As String = "%h %cr %cn %s") As String
-        If Not IO.Directory.Exists(repository) Then Return "directory not exists"
+        CheckDirectory(repository)
         Dim cmd = "log --pretty=format:""" + gitLogFormat + """"
         If count > 0 Then cmd += " -" + count.ToString
         If graph Then cmd += " --graph"
@@ -114,14 +119,15 @@
     End Function
 
     Public Shared Function RepositoryClone(folder As String, url As String) As String
-        If Not IO.Directory.Exists(folder) Then Return "directory not exists"
+        CheckDirectory(folder)
         Dim cmd = "clone " + url
         Dim result = Execute(folder, cmd).Replace(vbLf, vbCrLf)
         CheckErrors(result)
         If result.ToLower.Contains("cloning into") Then
             Return result
         Else
-            Throw New Exception("Ошибка клонирования: " + result)
+            RaiseEvent Logger("ERR", "Clone Error: " + result)
+            Throw New Exception("Clone Error: " + result)
         End If
     End Function
 
@@ -165,11 +171,21 @@
     End Function
 
     Private Shared Sub CheckErrors(response As String)
-        If response.Contains("error:") Or response.Contains("fatal:") Then Throw New Exception("Git Error Message: " + response)
+        If response.Contains("error:") Or response.Contains("fatal:") Then
+            RaiseEvent Logger("ERR", "Git Error Message:" + response)
+            Throw New Exception("Git Error Message: " + response)
+        End If
+    End Sub
+
+    Private Shared Sub CheckDirectory(repository As String)
+        If Not IO.Directory.Exists(repository) Then
+            RaiseEvent Logger("ERR", "Directory not exists:" + repository)
+            Throw New Exception("directory not exists")
+        End If
     End Sub
 
     Public Shared Sub SelectBranch(repository As String, changeTo As String)
-        If Not IO.Directory.Exists(repository) Then Throw New Exception("directory not exists")
+        CheckDirectory(repository)
         If changeTo.Contains("/") Then
             'remote
             Dim outp = Execute(repository, "checkout --track " + changeTo).ToLower.Replace(vbLf, vbCrLf)
@@ -223,6 +239,7 @@
             If status.IsRepository Then
                 GitTool.RepositoryPull(targetPath)
             Else
+                RaiseEvent Logger("ERR", "Failed to clone repository " + url)
                 Throw New Exception("Failed to clone repository " + url)
             End If
         End If

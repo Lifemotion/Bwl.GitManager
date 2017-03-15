@@ -12,6 +12,9 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub RepmanagerForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AddHandler GitTool.Logger, Sub(type As String, msg As String)
+                                       _logger.AddDebug("GIT: " + type + ": " + msg)
+                                   End Sub
         Try
             Text += " " + Application.ProductVersion.ToString + " [" + IO.File.GetLastWriteTime(Application.ExecutablePath).ToString + "]"
         Catch ex As Exception
