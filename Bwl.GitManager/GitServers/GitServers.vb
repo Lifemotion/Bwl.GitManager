@@ -1,7 +1,13 @@
 ﻿Imports Bwl.GitManager
 
 Public Class GitServers
-    Public Shared ReadOnly Property Providers As New List(Of IGitServer)
+    Private Shared _providers As New List(Of IGitServer)
+
+    Public Shared ReadOnly Property Providers As List(Of IGitServer)
+        Get
+            Return _providers
+        End Get
+    End Property
 
     Shared Sub New()
         Providers.Add(New StashServer)

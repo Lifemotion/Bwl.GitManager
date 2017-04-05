@@ -1,5 +1,10 @@
 ﻿Public Class ProcessList
+    Private Shared _processes As Process()
     Public Shared ReadOnly Property Processes As Process()
+        Get
+            Return _processes
+        End Get
+    End Property
 
     Shared Sub New()
         _Processes = Process.GetProcesses

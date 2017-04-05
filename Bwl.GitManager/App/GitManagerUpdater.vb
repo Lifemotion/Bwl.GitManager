@@ -1,6 +1,6 @@
 ﻿Public Class GitManagerUpdater
     Dim _repFolder As String = ""
-    Public ReadOnly Property UpdateAvailable As Boolean
+    Public Property UpdateAvailable As Boolean
 
     Public Sub New()
         Dim folder = IO.Path.Combine(Application.StartupPath, "..", "..", "..")
