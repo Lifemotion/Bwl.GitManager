@@ -54,12 +54,12 @@
 
     Public Sub ResetClean(recursive As Boolean, noProgress As Boolean, needReset As Boolean, needClean As Boolean, needCleanIgnored As Boolean)
         If Not noProgress Then _progress += 1 : RaiseEvent Progress(_progress, Me)
-        If FullPath <> "#" Then
-            If needReset Then      GitTool.RepositoryReset(FullPath, "hard")
-            If needClean Then       GitTool.RepositoryClean(FullPath, needCleanIgnored)
-                _status = GitTool.GetRepositoryStatus(FullPath)
-            End If
-            If recursive Then
+        If FullPath <> "#" And Status.IsRepository = True Then
+            If needReset Then GitTool.RepositoryReset(FullPath, "hard")
+            If needClean Then GitTool.RepositoryClean(FullPath, needCleanIgnored)
+            _status = GitTool.GetRepositoryStatus(FullPath)
+        End If
+        If recursive Then
             For Each child In ChildNodes
                 child.ResetClean(recursive, noProgress, needReset, needClean, needCleanIgnored)
             Next
@@ -82,7 +82,7 @@
 
     Public Sub UpdatePull(recursive As Boolean, onlyChanged As Boolean)
         _progress += 1 : RaiseEvent Progress(_progress, Me)
-        If FullPath <> "#" Then
+        If FullPath <> "#" And Status.IsRepository = True Then
             Try
                 If Status.CanPull Or onlyChanged = False Then GitTool.RepositoryPull(FullPath)
                 _status = GitTool.GetRepositoryStatus(FullPath)
@@ -99,7 +99,7 @@
 
     Public Sub Push(recursive As Boolean, onlyChanged As Boolean)
         _progress += 1 : RaiseEvent Progress(_progress, Me)
-        If FullPath <> "#" Then
+        If FullPath <> "#" And Status.IsRepository = True Then
             Try
                 If Status.CanPush Or onlyChanged = False Then GitTool.RepositoryPush(FullPath)
                 _status = GitTool.GetRepositoryStatus(FullPath)

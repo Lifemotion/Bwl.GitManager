@@ -47,6 +47,8 @@ Partial Class GitManagerForm
         Me.Committer1 = New Bwl.GitManager.Committer()
         Me.RepositoryTree1 = New Bwl.GitManager.RepositoryTreeWithActions()
         Me.ActionButtons1 = New Bwl.GitManager.ActionButtons()
+        Me.bAbortLongProcess = New System.Windows.Forms.Button()
+        Me.tHideLongProcess = New System.Windows.Forms.Timer(Me.components)
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -159,13 +161,14 @@ Partial Class GitManagerForm
         'bUpdate
         '
         Me.bUpdate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bUpdate.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.bUpdate.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
-        Me.bUpdate.Location = New System.Drawing.Point(988, 621)
+        Me.bUpdate.Location = New System.Drawing.Point(988, 618)
         Me.bUpdate.Name = "bUpdate"
         Me.bUpdate.Size = New System.Drawing.Size(193, 23)
         Me.bUpdate.TabIndex = 15
         Me.bUpdate.Text = "Доступно обновление!"
-        Me.bUpdate.UseVisualStyleBackColor = True
+        Me.bUpdate.UseVisualStyleBackColor = False
         Me.bUpdate.Visible = False
         '
         'lbBranchLabel
@@ -193,7 +196,7 @@ Partial Class GitManagerForm
         '
         Me.cbBranch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cbBranch.FormattingEnabled = True
-        Me.cbBranch.Location = New System.Drawing.Point(464, 24)
+        Me.cbBranch.Location = New System.Drawing.Point(464, 25)
         Me.cbBranch.Name = "cbBranch"
         Me.cbBranch.Size = New System.Drawing.Size(486, 21)
         Me.cbBranch.TabIndex = 18
@@ -228,11 +231,30 @@ Partial Class GitManagerForm
         Me.ActionButtons1.Size = New System.Drawing.Size(229, 424)
         Me.ActionButtons1.TabIndex = 11
         '
+        'bAbortLongProcess
+        '
+        Me.bAbortLongProcess.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bAbortLongProcess.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.bAbortLongProcess.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
+        Me.bAbortLongProcess.Location = New System.Drawing.Point(378, 618)
+        Me.bAbortLongProcess.Name = "bAbortLongProcess"
+        Me.bAbortLongProcess.Size = New System.Drawing.Size(604, 23)
+        Me.bAbortLongProcess.TabIndex = 19
+        Me.bAbortLongProcess.Text = "Прервать долго выполняемый процесс"
+        Me.bAbortLongProcess.UseVisualStyleBackColor = False
+        Me.bAbortLongProcess.Visible = False
+        '
+        'tHideLongProcess
+        '
+        Me.tHideLongProcess.Interval = 2000
+        '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1184, 646)
+        Me.Controls.Add(Me.bAbortLongProcess)
         Me.Controls.Add(Me.cbBranch)
         Me.Controls.Add(Me.lbBranch)
         Me.Controls.Add(Me.lbBranchLabel)
@@ -245,6 +267,7 @@ Partial Class GitManagerForm
         Me.Controls.Add(Me.tbStatus)
         Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.KeyPreview = True
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "GitManagerForm"
         Me.Text = "Bwl Git Repository Manager"
@@ -275,4 +298,6 @@ Partial Class GitManagerForm
     Friend WithEvents lbBranchLabel As Label
     Friend WithEvents lbBranch As Label
     Friend WithEvents cbBranch As ComboBox
+    Friend WithEvents bAbortLongProcess As Button
+    Friend WithEvents tHideLongProcess As Timer
 End Class

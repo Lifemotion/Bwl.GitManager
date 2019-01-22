@@ -21,6 +21,7 @@ Public Class GitManagerForm
         End Try
         Try
             GitTool.Init()
+            AddHandler GitTool.GitProcessWatcher, AddressOf GitProcessWatcherHandler
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical)
             Application.Exit()
@@ -29,6 +30,18 @@ Public Class GitManagerForm
         RepositoryTree1.RescanRepositoryPaths()
         AddHandler My.Application.StartupNextInstance, AddressOf Application_StartupNextInstance
         AddHandler RepositoryTree1.TreeRefreshed, AddressOf RepositoryTree1_TreeRefreshed
+    End Sub
+
+    Private Sub GitProcessWatcherHandler(seconds As Integer, prc As Process)
+        If seconds > 2 Then
+            Me.Invoke(Sub()
+                          bAbortLongProcess.Text = "Выполняется (" + seconds.ToString + ") git " + prc.StartInfo.Arguments + " " + prc.StartInfo.WorkingDirectory
+                          bAbortLongProcess.Tag = prc
+                          bAbortLongProcess.Visible = True
+                          tHideLongProcess.Stop()
+                          tHideLongProcess.Start()
+                      End Sub)
+        End If
     End Sub
 
     Private Sub RepositoryTree1_TreeRefreshed()
@@ -176,6 +189,30 @@ Public Class GitManagerForm
 
     Private Sub UpdateSelectedRepView(node As TreeNode, repNode As GitPathNode) Handles RepositoryTree1.NodeSelected
 
+    End Sub
+
+    Private Sub GitManagerForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.F3 Then
+            ActionButtons1.tbFilter.Select()
+        End If
+    End Sub
+
+    Private Sub bAbortLongProcess_Click(sender As Object, e As EventArgs) Handles bAbortLongProcess.Click
+        Try
+            Dim tag As Process = bAbortLongProcess.Tag
+            If MsgBox("Прервать " + IO.Path.GetFileNameWithoutExtension(tag.StartInfo.FileName) + " " + tag.StartInfo.Arguments + " " + tag.StartInfo.WorkingDirectory + " ?", vbYesNo) = MsgBoxResult.Yes Then
+                tag.Kill()
+                bAbortLongProcess.Visible = False
+                tHideLongProcess.Stop()
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub tHideLongProcess_Tick(sender As Object, e As EventArgs) Handles tHideLongProcess.Tick
+        bAbortLongProcess.Visible = False
+        tHideLongProcess.Stop()
     End Sub
 End Class
 

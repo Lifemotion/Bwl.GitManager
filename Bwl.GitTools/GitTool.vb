@@ -18,6 +18,8 @@
         Throw New Exception("Git not found")
     End Sub
 
+    Public Shared Event GitProcessWatcher(seconds As Integer, prc As Process)
+
     Public Shared Function Execute(repository As String, args As String) As String
         If _toolPath = "" Then
             RaiseEvent Logger("ERR", "GitTool: Call init first")
@@ -34,13 +36,26 @@
         prc.StartInfo.WorkingDirectory = repository
         prc.StartInfo.FileName = _toolPath
         prc.StartInfo.CreateNoWindow = True
+        Dim processWatcher As New Threading.Thread(Sub()
+                                                       Dim seconds As Integer
+                                                       Do
+                                                           Threading.Thread.Sleep(1000)
+                                                           seconds += 1
+
+                                                           If prc Is Nothing OrElse prc.HasExited Then Exit Sub
+                                                           RaiseEvent GitProcessWatcher(seconds, prc)
+                                                       Loop
+                                                   End Sub)
+        processWatcher.IsBackground = True
+        processWatcher.Name = "GitTool Process Watcher: " + repository.ToString + " " + args
+        processWatcher.Start()
         prc.Start()
         prc.PriorityClass = ProcessPriorityClass.Idle
         Dim resultOutput = ""
         Dim resultErrors = ""
         resultOutput = prc.StandardOutput.ReadToEnd()
         If resultOutput = "" Then resultErrors = prc.StandardError.ReadToEnd()
-        prc.WaitForExit()
+
         Return resultOutput + resultErrors
     End Function
 

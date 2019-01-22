@@ -13,9 +13,14 @@
             Dim result1 = GitTool.RepositoryCommit(rep.FullPath, msg)
             _logger.AddMessage(result1)
             Dim result2 = GitTool.RepositoryPush(rep.FullPath)
+
+            _logger.AddMessage("...завершено")
+        Catch ex As Exception
+            _logger.AddError("Push failed: " + ex.Message)
+        End Try
+        Try
             rep.UpdateFetch(False, True)
             ConnectedRepositoryTree.RefreshAllTree()
-            _logger.AddMessage("...завершено")
         Catch ex As Exception
             _logger.AddError("Push failed: " + ex.Message)
         End Try

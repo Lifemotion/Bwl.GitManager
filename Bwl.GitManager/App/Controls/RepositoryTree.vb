@@ -185,13 +185,6 @@ Public Class RepositoryTree
         RaiseEvent NodeSelected(SelectedNode, SelectedRepNode)
     End Sub
 
-    Private Sub tbFilter_TextChanged(sender As Object, e As EventArgs) Handles tbFilter.TextChanged
-
-    End Sub
-
-    Private Sub tbFilter_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbFilter.KeyPress
-    End Sub
-
     Private Sub tbFilter_KeyDown(sender As Object, e As KeyEventArgs) Handles tbFilter.KeyDown
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
