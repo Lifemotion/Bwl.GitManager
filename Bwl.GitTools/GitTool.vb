@@ -39,11 +39,11 @@
         Dim processWatcher As New Threading.Thread(Sub()
                                                        Dim seconds As Integer
                                                        Do
+                                                           RaiseEvent GitProcessWatcher(seconds, prc)
                                                            Threading.Thread.Sleep(1000)
                                                            seconds += 1
 
                                                            If prc Is Nothing OrElse prc.HasExited Then Exit Sub
-                                                           RaiseEvent GitProcessWatcher(seconds, prc)
                                                        Loop
                                                    End Sub)
         processWatcher.IsBackground = True
@@ -144,6 +144,17 @@
             RaiseEvent Logger("ERR", "Clone Error: " + result)
             Throw New Exception("Clone Error: " + result)
         End If
+    End Function
+
+    Public Const GitConfigUsername As String = "user.name"
+    Public Const GitConfigEmail As String = "user.email "
+
+    Public Shared Function GitGetConfig(configID As String) As String
+        Return Execute(".", " config --global " + configID)
+    End Function
+
+    Public Shared Function GitSetConfig(configID As String, value As String) As String
+        Return Execute(".", " config --global " + configID + " """ + value + """")
     End Function
 
     Public Shared Function GetRepositoryStatus(repository As String) As GitRepositoryStatus

@@ -33,15 +33,18 @@ Public Class GitManagerForm
     End Sub
 
     Private Sub GitProcessWatcherHandler(seconds As Integer, prc As Process)
-        If seconds > 2 Then
-            Me.Invoke(Sub()
-                          bAbortLongProcess.Text = "Выполняется (" + seconds.ToString + ") git " + prc.StartInfo.Arguments + " " + prc.StartInfo.WorkingDirectory
+        'If seconds > 2 Then
+        Me.Invoke(Sub()
+                          bAbortLongProcess.Text = "Выполняется (" + seconds.ToString + ") " +
+                          IO.Path.GetFileNameWithoutExtension(prc.StartInfo.FileName) +
+                          prc.StartInfo.Arguments + " " + prc.StartInfo.WorkingDirectory
+
                           bAbortLongProcess.Tag = prc
                           bAbortLongProcess.Visible = True
                           tHideLongProcess.Stop()
                           tHideLongProcess.Start()
                       End Sub)
-        End If
+        ' End If
     End Sub
 
     Private Sub RepositoryTree1_TreeRefreshed()
@@ -213,6 +216,15 @@ Public Class GitManagerForm
     Private Sub tHideLongProcess_Tick(sender As Object, e As EventArgs) Handles tHideLongProcess.Tick
         bAbortLongProcess.Visible = False
         tHideLongProcess.Stop()
+    End Sub
+
+    Private Sub menuSetUserData_Click(sender As Object, e As EventArgs) Handles menuSetUserData.Click
+        Dim user = GitTool.GitGetConfig(GitTool.GitConfigUsername)
+        Dim mail = GitTool.GitGetConfig(GitTool.GitConfigEmail)
+        user = InputBox("Username:", "Git Manager", user)
+        mail = InputBox("E-Mail:", "Git Manager", mail)
+        If user > "" Then GitTool.GitSetConfig(GitTool.GitConfigUsername, user)
+        If mail > "" Then GitTool.GitSetConfig(GitTool.GitConfigEmail, mail)
     End Sub
 End Class
 

@@ -49,6 +49,7 @@ Partial Class GitManagerForm
         Me.ActionButtons1 = New Bwl.GitManager.ActionButtons()
         Me.bAbortLongProcess = New System.Windows.Forms.Button()
         Me.tHideLongProcess = New System.Windows.Forms.Timer(Me.components)
+        Me.menuSetUserData = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -124,7 +125,7 @@ Partial Class GitManagerForm
         '
         'ИнструментыToolStripMenuItem
         '
-        Me.ИнструментыToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuRescanPaths, Me.menuSettings, Me.menuExportSourceTree, Me.menuCheckUpdates})
+        Me.ИнструментыToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuRescanPaths, Me.menuSettings, Me.menuExportSourceTree, Me.menuSetUserData, Me.menuCheckUpdates})
         Me.ИнструментыToolStripMenuItem.Name = "ИнструментыToolStripMenuItem"
         Me.ИнструментыToolStripMenuItem.Size = New System.Drawing.Size(95, 20)
         Me.ИнструментыToolStripMenuItem.Text = "Инструменты"
@@ -249,6 +250,12 @@ Partial Class GitManagerForm
         '
         Me.tHideLongProcess.Interval = 2000
         '
+        'menuSetUserData
+        '
+        Me.menuSetUserData.Name = "menuSetUserData"
+        Me.menuSetUserData.Size = New System.Drawing.Size(308, 22)
+        Me.menuSetUserData.Text = "Изменить данные пользователя"
+        '
         'GitManagerForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -300,4 +307,5 @@ Partial Class GitManagerForm
     Friend WithEvents cbBranch As ComboBox
     Friend WithEvents bAbortLongProcess As Button
     Friend WithEvents tHideLongProcess As Timer
+    Friend WithEvents menuSetUserData As ToolStripMenuItem
 End Class
