@@ -44,10 +44,10 @@
         If ConnectedRepositoryTree.SelectedRepNode IsNot Nothing Then
             tbCommitMessage.Enabled = False
             bCommit.Enabled = False
-            Dim thread As New Threading.Thread(Sub()
-                                                   CommitRepository(ConnectedRepositoryTree.SelectedRepNode)
-                                                   Me.Invoke(Sub() Refresh())
-                                               End Sub)
+            Dim thread = ThreadManager.CreateThread("bCommit_Click", Sub()
+                                                                         CommitRepository(ConnectedRepositoryTree.SelectedRepNode)
+                                                                         Me.Invoke(Sub() Refresh())
+                                                                     End Sub)
             thread.Start()
         End If
     End Sub

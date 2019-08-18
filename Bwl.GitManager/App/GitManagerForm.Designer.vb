@@ -38,6 +38,7 @@ Partial Class GitManagerForm
         Me.menuRescanPaths = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuSettings = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuExportSourceTree = New System.Windows.Forms.ToolStripMenuItem()
+        Me.menuSetUserData = New System.Windows.Forms.ToolStripMenuItem()
         Me.menuCheckUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.tbUpdate = New System.Windows.Forms.Timer(Me.components)
         Me.bUpdate = New System.Windows.Forms.Button()
@@ -49,7 +50,7 @@ Partial Class GitManagerForm
         Me.ActionButtons1 = New Bwl.GitManager.ActionButtons()
         Me.bAbortLongProcess = New System.Windows.Forms.Button()
         Me.tHideLongProcess = New System.Windows.Forms.Timer(Me.components)
-        Me.menuSetUserData = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ОтладкаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -125,7 +126,7 @@ Partial Class GitManagerForm
         '
         'ИнструментыToolStripMenuItem
         '
-        Me.ИнструментыToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuRescanPaths, Me.menuSettings, Me.menuExportSourceTree, Me.menuSetUserData, Me.menuCheckUpdates})
+        Me.ИнструментыToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.menuRescanPaths, Me.menuSettings, Me.menuExportSourceTree, Me.menuSetUserData, Me.menuCheckUpdates, Me.ОтладкаToolStripMenuItem})
         Me.ИнструментыToolStripMenuItem.Name = "ИнструментыToolStripMenuItem"
         Me.ИнструментыToolStripMenuItem.Size = New System.Drawing.Size(95, 20)
         Me.ИнструментыToolStripMenuItem.Text = "Инструменты"
@@ -133,25 +134,31 @@ Partial Class GitManagerForm
         'menuRescanPaths
         '
         Me.menuRescanPaths.Name = "menuRescanPaths"
-        Me.menuRescanPaths.Size = New System.Drawing.Size(308, 22)
+        Me.menuRescanPaths.Size = New System.Drawing.Size(307, 22)
         Me.menuRescanPaths.Text = "Пересканировать пути"
         '
         'menuSettings
         '
         Me.menuSettings.Name = "menuSettings"
-        Me.menuSettings.Size = New System.Drawing.Size(308, 22)
+        Me.menuSettings.Size = New System.Drawing.Size(307, 22)
         Me.menuSettings.Text = "Настройки..."
         '
         'menuExportSourceTree
         '
         Me.menuExportSourceTree.Name = "menuExportSourceTree"
-        Me.menuExportSourceTree.Size = New System.Drawing.Size(308, 22)
+        Me.menuExportSourceTree.Size = New System.Drawing.Size(307, 22)
         Me.menuExportSourceTree.Text = "Экспортировать репозитории в SourceTree"
+        '
+        'menuSetUserData
+        '
+        Me.menuSetUserData.Name = "menuSetUserData"
+        Me.menuSetUserData.Size = New System.Drawing.Size(307, 22)
+        Me.menuSetUserData.Text = "Изменить данные пользователя"
         '
         'menuCheckUpdates
         '
         Me.menuCheckUpdates.Name = "menuCheckUpdates"
-        Me.menuCheckUpdates.Size = New System.Drawing.Size(308, 22)
+        Me.menuCheckUpdates.Size = New System.Drawing.Size(307, 22)
         Me.menuCheckUpdates.Text = "Проверить обновления"
         '
         'tbUpdate
@@ -250,11 +257,11 @@ Partial Class GitManagerForm
         '
         Me.tHideLongProcess.Interval = 2000
         '
-        'menuSetUserData
+        'ОтладкаToolStripMenuItem
         '
-        Me.menuSetUserData.Name = "menuSetUserData"
-        Me.menuSetUserData.Size = New System.Drawing.Size(308, 22)
-        Me.menuSetUserData.Text = "Изменить данные пользователя"
+        Me.ОтладкаToolStripMenuItem.Name = "ОтладкаToolStripMenuItem"
+        Me.ОтладкаToolStripMenuItem.Size = New System.Drawing.Size(307, 22)
+        Me.ОтладкаToolStripMenuItem.Text = "Отладка"
         '
         'GitManagerForm
         '
@@ -308,4 +315,5 @@ Partial Class GitManagerForm
     Friend WithEvents bAbortLongProcess As Button
     Friend WithEvents tHideLongProcess As Timer
     Friend WithEvents menuSetUserData As ToolStripMenuItem
+    Friend WithEvents ОтладкаToolStripMenuItem As ToolStripMenuItem
 End Class

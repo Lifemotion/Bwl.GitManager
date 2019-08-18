@@ -16,7 +16,7 @@
     End Sub
 
     Public Sub CheckUpdatesBackground()
-        Dim thread As New Threading.Thread(AddressOf CheckUpdates)
+        Dim thread = ThreadManager.CreateThread("CheckUpdates", AddressOf CheckUpdates)
         thread.Start()
     End Sub
 

@@ -15,7 +15,7 @@
     End Sub
 
     Public Sub RescanRepositoryPaths()
-        Dim thread As New Threading.Thread(AddressOf RescanRepositoryPathsWorker)
+        Dim thread = ThreadManager.CreateThread("RescanRepositoryPaths", AddressOf RescanRepositoryPathsWorker)
         thread.IsBackground = True
         thread.Start()
     End Sub
@@ -42,13 +42,13 @@
         Else
             _repTree.ResetProgress()
             SetStatus(operationText, tree, operatioMaximum, 0)
-            _userProgressThread = New Threading.Thread(Sub()
-                                                           actionDelegate()
-                                                           _userProgressThread = Nothing
-                                                           '_logger.AddMessage("...завершено")
-                                                           RefreshAllTree()
-                                                           SetStatus("", Nothing, 0, -1)
-                                                       End Sub)
+            _userProgressThread = ThreadManager.CreateThread("StartInThreadUser " + operationText, Sub()
+                                                                                                       actionDelegate()
+                                                                                                       _userProgressThread = Nothing
+                                                                                                       '_logger.AddMessage("...завершено")
+                                                                                                       RefreshAllTree()
+                                                                                                       SetStatus("", Nothing, 0, -1)
+                                                                                                   End Sub)
             _userProgressThread.Start()
         End If
     End Sub
@@ -57,13 +57,13 @@
         If _backgroundProgressThread Is Nothing And _userProgressThread Is Nothing Then
             _repTree.ResetProgress()
             SetStatus(operationText, tree, operatioMaximum, 0)
-            _backgroundProgressThread = New Threading.Thread(Sub()
-                                                                 actionDelegate()
-                                                                 _backgroundProgressThread = Nothing
-                                                                 '_logger.AddMessage("...завершено")
-                                                                 RefreshAllTree()
-                                                                 SetStatus("", Nothing, 0, -1)
-                                                             End Sub)
+            _backgroundProgressThread = ThreadManager.CreateThread("StartInThreadBackground " + operationText, Sub()
+                                                                                                                   actionDelegate()
+                                                                                                                   _backgroundProgressThread = Nothing
+                                                                                                                   '_logger.AddMessage("...завершено")
+                                                                                                                   RefreshAllTree()
+                                                                                                                   SetStatus("", Nothing, 0, -1)
+                                                                                                               End Sub)
             _backgroundProgressThread.Start()
         End If
     End Sub
@@ -189,33 +189,33 @@
         SetCustomCommand(GitManager.Settings.Command4Setting.Value, menuCommand4)
         SetCustomCommand(GitManager.Settings.Command5Setting.Value, menuCommand5)
 
-        Dim autoFetchThread As New Threading.Thread(Sub()
-                                                        Do
-                                                            Threading.Thread.Sleep(100)
-                                                            If GitManager.Settings.AutoFetchEveryMinutes.Value > 0 Then
-                                                                Threading.Thread.Sleep(1000 * 60 * GitManager.Settings.AutoFetchEveryMinutes.Value)
-                                                                Try
-                                                                    FetchTreeBackground(_repTree, True)
-                                                                Catch ex As Exception
-                                                                End Try
-                                                            End If
-                                                        Loop
-                                                    End Sub)
+        Dim autoFetchThread = ThreadManager.CreateThread("autoFetchThread", Sub()
+                                                                                Do
+                                                                                    Threading.Thread.Sleep(100)
+                                                                                    If GitManager.Settings.AutoFetchEveryMinutes.Value > 0 Then
+                                                                                        Threading.Thread.Sleep(1000 * 60 * GitManager.Settings.AutoFetchEveryMinutes.Value)
+                                                                                        Try
+                                                                                            FetchTreeBackground(_repTree, True)
+                                                                                        Catch ex As Exception
+                                                                                        End Try
+                                                                                    End If
+                                                                                Loop
+                                                                            End Sub)
         autoFetchThread.IsBackground = True
         autoFetchThread.Start()
 
-        Dim autoStatusThread As New Threading.Thread(Sub()
-                                                         Do
-                                                             Threading.Thread.Sleep(100)
-                                                             If GitManager.Settings.AutoUpdateLocalEveryMinutes.Value > 0 Then
-                                                                 Threading.Thread.Sleep(1000 * 60 * GitManager.Settings.AutoUpdateLocalEveryMinutes.Value)
-                                                                 Try
-                                                                     UpdateTreeBackground(_repTree, True)
-                                                                 Catch ex As Exception
-                                                                 End Try
-                                                             End If
-                                                         Loop
-                                                     End Sub)
+        Dim autoStatusThread = ThreadManager.CreateThread("autoStatusThread", Sub()
+                                                                                  Do
+                                                                                      Threading.Thread.Sleep(100)
+                                                                                      If GitManager.Settings.AutoUpdateLocalEveryMinutes.Value > 0 Then
+                                                                                          Threading.Thread.Sleep(1000 * 60 * GitManager.Settings.AutoUpdateLocalEveryMinutes.Value)
+                                                                                          Try
+                                                                                              UpdateTreeBackground(_repTree, True)
+                                                                                          Catch ex As Exception
+                                                                                          End Try
+                                                                                      End If
+                                                                                  Loop
+                                                                              End Sub)
         autoStatusThread.IsBackground = True
         autoStatusThread.Start()
     End Sub

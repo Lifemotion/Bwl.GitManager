@@ -63,9 +63,9 @@
         If _repNode IsNot Nothing Then _repNode.UpdateStatus(False, False)
         tbFilter.Text = ""
         CleanActionButtons()
-        Dim thr As New Threading.Thread(Sub()
-                                            CreateActionButtons("")
-                                        End Sub)
+        Dim thr = ThreadManager.CreateThread("SetRepNode", Sub()
+                                                               CreateActionButtons("")
+                                                           End Sub)
         thr.Start()
     End Sub
 

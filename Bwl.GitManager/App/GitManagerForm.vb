@@ -226,5 +226,13 @@ Public Class GitManagerForm
         If user > "" Then GitTool.GitSetConfig(GitTool.GitConfigUsername, user)
         If mail > "" Then GitTool.GitSetConfig(GitTool.GitConfigEmail, mail)
     End Sub
+
+    Private Sub ОтладкаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ОтладкаToolStripMenuItem.Click
+        Dim str = ""
+        For Each ti In ThreadManager.GetAliveThreads
+            str += ti.CreateTime.ToString + " " + ti.Info + " " + ti.Thread.ThreadState.ToString + vbCrLf
+        Next
+        MsgBox(str)
+    End Sub
 End Class
 
